@@ -1,0 +1,25 @@
+syntax= "proto3";
+
+/*** Date/Time message to set RTC clock and get timestamps */
+message Timestamp {
+    uint64 time      = 1; // POSIX timestamp (seconds elapsed since 1st January 1970 0:00)
+    uint32 us        = 2; // Microseconds
+}
+
+/*** ECG Sensor ***/
+message EcgBuffer {
+    bytes     data  = 1;
+    int32     lodpn = 2;
+    Timestamp timestamp = 3;
+};
+
+/*** EDA Sensor ***/
+message Impedance {
+    float  real      = 1;
+    float  imag      = 2;
+}
+
+message EdaBuffer {
+    repeated Impedance data = 1;
+    Timestamp timestamp     = 2;
+};

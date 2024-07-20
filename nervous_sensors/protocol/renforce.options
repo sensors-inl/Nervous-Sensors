@@ -1,0 +1,2 @@
+EcgBuffer.data max_size:200 fixed_length:true
+EdaBuffer.data max_count:16  fixed_count:true

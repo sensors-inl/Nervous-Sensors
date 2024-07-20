@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "nervous-sensors"
+version = "0.1.0"
+description = ""
+authors = ["Hugo Buy", "Tristan Habémont", "Bertrand Massot <bertrand.massot@insa-lyon.fr>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/INL-Biomedical-Sensor/Nervous-Sensors"
+packages = [
+    { include = "nervous_sensors" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+bleak = "^0.20.2"
+cobs = "^1.2.0"
+numpy = "^1.26.4"
+protobuf = "^4.23.4"
+pylsl = "^1.16.2"
+pyqt5 = "^5.15.9"
+pandas = "^2.2.1"
+plotly = "^5.22.0"
+dash = "^2.16.1"
+click = "^8.1.7"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+pre-commit = "^3.7.1"
+
+[tool.setuptools.packages.find]
+exclude = ["tests"]
+
+[tool.poetry.scripts]
+nervous = "nervous_sensors.cli:cli"
+
+[tool.ruff]
+line-length = 79
+target-version = "py312"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  release:
+    types: [released]
+  push:
+    branches: [ "main" ]
+    paths:
+      - ".github/workflows/release.yml"
+
+jobs:
+  Build-Publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 🐍 Set up Python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: 🪶 Install poetry
+        uses: abatilo/actions-poetry@v2
+
+      - name: 🪶 Set up virtualenv
+        run: |
+          poetry config virtualenvs.in-project true
+      - uses: actions/cache@v3
+
+        name: 🪶 Cache the virtualenv
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
+
+      - name: 📦 Install the project dependencies
+        run: |
+          poetry install --only main
+
+      - name: 🛠️ Build
+        run: |
+          poetry build
+
+      - name: 🚀 Publish to PyPI
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
+          poetry publish
