@@ -1,15 +1,24 @@
 import asyncio
+
 import bleak
-from renforce_codec import (cobs_decode, protobuf_decode, time_encode)
-from renforce_data import ECGData, EDAData, RenforceData
+from bleak import BleakError
+from renforce_codec import time_encode
+from renforce_data import RenforceData
 
-
-SENSOR_TYPE_LIST = ['ECG', 'EDA']
-SENSOR_ADV_PREFIX = 'RENFORCE '
+SENSOR_TYPE_LIST = ["ECG", "EDA"]
+SENSOR_ADV_PREFIX = "RENFORCE "
 
 
 class RenforceSensor:
-    def __init__(self, name, start_time, callbacks, battery_callback, connected_callback, disconnected_callback):
+    def __init__(
+        self,
+        name,
+        start_time,
+        callbacks,
+        battery_callback,
+        connected_callback,
+        disconnected_callback,
+    ):
         self.name = name
         self.type = None
         self.data = None
@@ -23,7 +32,11 @@ class RenforceSensor:
 
         if self.type is None:
             self.type = SENSOR_ADV_PREFIX + SENSOR_TYPE_LIST[0]
-            print("Error in detecting sensor type from its name", self.name, ", default to " + self.type)
+            print(
+                "Error in detecting sensor type from its name",
+                self.name,
+                ", default to " + self.type,
+            )
 
         # Bind all callbacks
         self.battery_callback = battery_callback
@@ -49,13 +62,13 @@ class RenforceSensor:
             print("\033[91m" + self.name + " disconnected ! \033[00m")
             try:
                 self.disconnected_event._loop.call_soon_threadsafe(self.disconnected_event.set)
-            except:
+            except BleakError:
                 print("error while setting disconnect event")
 
         return disconnected_callback
 
     def is_connected(self):
-        if self.client != None:
+        if self.client is not None:
             return self.client.is_connected
         else:
             return False
@@ -67,8 +80,14 @@ class RenforceSensor:
             await self.client.disconnect()
 
     async def start_notifications(self):
-        await self.client.start_notify("00002a19-0000-1000-8000-00805f9b34fb", self.__get_battery_callback())
-        await self.client.start_notify("6e400003-b5a3-f393-e0a9-e50e24dcca9e", self.data.get_data_callback())
+        await self.client.start_notify(
+            "00002a19-0000-1000-8000-00805f9b34fb",
+            self.__get_battery_callback(),
+        )
+        await self.client.start_notify(
+            "6e400003-b5a3-f393-e0a9-e50e24dcca9e",
+            self.data.get_data_callback(),
+        )
 
     async def stop_notifications(self):
         await self.client.stop_notify("00002a19-0000-1000-8000-00805f9b34fb")
@@ -91,8 +110,10 @@ class RenforceSensor:
                 self.disconnected_event.clear()
 
                 try:
-                    async with bleak.BleakClient(device.address,
-                                                 disconnected_callback=self.__get_disconnected_callback()) as client:
+                    async with bleak.BleakClient(
+                        device.address,
+                        disconnected_callback=self.__get_disconnected_callback(),
+                    ) as client:
                         self.client = client
                         print("\033[92m" + self.name + " is connected \033[00m")
 
@@ -100,7 +121,8 @@ class RenforceSensor:
                         await self.client.write_gatt_char(
                             "6e400002-b5a3-f393-e0a9-e50e24dcca9e",
                             await time_encode(),
-                            response=False)
+                            response=False,
+                        )
 
                         # Notify connection to main app
                         await self.connected_callback()
@@ -111,7 +133,11 @@ class RenforceSensor:
                     self.client = None
 
                 except KeyboardInterrupt:
-                    print("Exiting - waiting for sensor", self.name, "disconnection")
+                    print(
+                        "Exiting - waiting for sensor",
+                        self.name,
+                        "disconnection",
+                    )
                     return
 
                 except bleak.exc.BleakDeviceNotFoundError:

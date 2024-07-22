@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 
 import bleak
 import pandas as pd
-
 from renforce_codec import cobs_decode, protobuf_decode
 
 # Maximum sizes from which the data are truncated and rested
@@ -15,8 +14,8 @@ THRESH2 = 20000
 ECG_SAMPLING_RATE = 512
 EDA_SAMPLING_RATE = 8
 
-class RenforceData(ABC):
 
+class RenforceData(ABC):
     def __init__(self, sensor_name, header, start_time, protobuf_type, callbacks):
         """
         @param header: header of the data
@@ -49,13 +48,19 @@ class RenforceData(ABC):
         with self.__lock:
             self.__data.extend(data)
 
-            if  len(self.__data) >= THRESH2:
+            if len(self.__data) >= THRESH2:
                 self.__data = self.__data[-THRESH1:]
 
     def get_name(self):
         return self._sensor_name
 
-    def get_latest_data(self, last_n=None, latest_data=None, latest_data_column=0, concerned_columns=None):
+    def get_latest_data(
+        self,
+        last_n=None,
+        latest_data=None,
+        latest_data_column=0,
+        concerned_columns=None,
+    ):
         """
         Two modes available:
         - all last n
@@ -103,7 +108,6 @@ class RenforceData(ABC):
         pass
 
     def get_data_callback(self):
-
         async def data_callback(sender: bleak.BleakGATTCharacteristic, data: bytearray):
             data = await cobs_decode(data)
             data, timestamp = await protobuf_decode(self._protobuf_type, data)
@@ -123,39 +127,42 @@ class RenforceData(ABC):
             return EDAData(sensor_name, start_time, protobuf_type, callbacks)
 
 
-
-
-#---------------------------
+# ---------------------------
 # ECG and EDA data classes
-#---------------------------
+# ---------------------------
+
 
 class ECGData(RenforceData):
     sampling_rate = ECG_SAMPLING_RATE
+
     def __init__(self, sensor_name, start_time, protobuf_type, callbacks):
         super().__init__(
             sensor_name=sensor_name,
             header=["time_ecg (s)", "ecg (mV)"],
             start_time=start_time,
             protobuf_type=protobuf_type,
-            callbacks=callbacks)
+            callbacks=callbacks,
+        )
 
     def _process_decoded_data(self, timestamp, data):
         data_to_add = []
         for i in range(len(data)):
-            data_to_add.append([timestamp + i * (1/self.sampling_rate), data[i]])
+            data_to_add.append([timestamp + i * (1 / self.sampling_rate), data[i]])
         self._add_data(data_to_add)
+
 
 class EDAData(RenforceData):
     sampling_rate = EDA_SAMPLING_RATE
+
     def __init__(self, sensor_name, start_time, protobuf_type, callbacks):
         super().__init__(
             sensor_name=sensor_name,
             header=["time_eda (s)", "12Hz"],
             start_time=start_time,
             protobuf_type=protobuf_type,
-            callbacks=callbacks)
+            callbacks=callbacks,
+        )
 
     def _process_decoded_data(self, timestamp, data):
         data_to_add = [[timestamp, data]]
         self._add_data(data_to_add)
-

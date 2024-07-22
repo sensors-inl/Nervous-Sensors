@@ -17,7 +17,6 @@ cobs = "^1.2.0"
 numpy = "^1.26.4"
 protobuf = "^4.23.4"
 pylsl = "^1.16.2"
-pyqt5 = "^5.15.9"
 pandas = "^2.2.1"
 plotly = "^5.22.0"
 dash = "^2.16.1"
@@ -37,8 +36,12 @@ exclude = ["tests"]
 nervous = "nervous_sensors.cli:cli"
 
 [tool.ruff]
-line-length = 79
+line-length = 119
 target-version = "py312"
+lint.select = ["I", "E", "F", "C"]
+
+[tool.ruff.lint.per-file-ignores]
+"nervous_sensors/renforce_pb2.py" = ["F821", "E501"]
 
 [build-system]
 requires = ["poetry-core"]

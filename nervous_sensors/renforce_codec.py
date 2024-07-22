@@ -1,12 +1,12 @@
-import renforce_pb2
-from cobs import cobs
-import numpy as np
 import time
 
+import numpy as np
+import renforce_pb2
+from cobs import cobs
 
 ecg_buffer_msg = renforce_pb2.EcgBuffer()
 eda_buffer_msg = renforce_pb2.EdaBuffer()
-__all__ = ['cobs_decode', 'protobuf_decode']
+__all__ = ["cobs_decode", "protobuf_decode"]
 
 
 async def time_encode():
@@ -16,7 +16,7 @@ async def time_encode():
     timestamp.us = int((t - int(t)) * 1_000_000)
     serialized_data = timestamp.SerializeToString()
     encoded_data = cobs.encode(serialized_data)
-    encoded_data = encoded_data + b'\x00'
+    encoded_data = encoded_data + b"\x00"
     return encoded_data
 
 
