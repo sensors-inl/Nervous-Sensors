@@ -6,7 +6,13 @@ It also implements an interface to PLUME Unity plugin to collect data within a
 virtual environment for synchronous recording as well as real-time feedback to
 the user.
 
-# CLI
+## Installation
+
+```bash
+pip install nervous-sensors
+```
+
+## CLI
 
 ```text
 Usage: nervous [OPTIONS]
@@ -28,7 +34,7 @@ Options:
 nervous -g -f data/csv/ -l -s ECG6543,EDA7201
 ```
 
-# CPU consumption
+## CPU consumption
 
 - BLE : no significant CPU usage was noticed with Bleak
 - Data storage : `TRESH1` & `TRESH2` values in `reforce_lsl.py` file may be
