@@ -3,10 +3,6 @@ name: Release
 on:
   release:
     types: [released]
-  push:
-    branches: [ "main" ]
-    paths:
-      - ".github/workflows/release.yml"
 
 jobs:
   Build-Publish:
