@@ -5,7 +5,7 @@ description = ""
 authors = ["Hugo Buy", "Tristan Habémont", "Bertrand Massot <bertrand.massot@insa-lyon.fr>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/INL-Biomedical-Sensor/Nervous-Sensors"
+homepage = "https://github.com/sensors-inl/Nervous"
 packages = [
     { include = "nervous_sensors" }
 ]
@@ -20,6 +20,7 @@ pylsl = "^1.16.2"
 pandas = "^2.2.1"
 plotly = "^5.22.0"
 dash = "^2.16.1"
+dash_bootstrap_components = "^1.6.0"
 click = "^8.1.7"
 aioconsole = "^0.7.1"
 
