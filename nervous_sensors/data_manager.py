@@ -3,43 +3,32 @@ from abc import ABC, abstractmethod
 
 import bleak
 import pandas as pd
-from renforce_codec import cobs_decode, protobuf_decode
+
+from .codec import cobs_decode, protobuf_decode
 
 # Maximum sizes from which the data are truncated and rested
 # using hysteresis for CPU consumption avoidance
 THRESH1 = 12000
 THRESH2 = 20000
 
-# Sampling rates
-ECG_SAMPLING_RATE = 512
-EDA_SAMPLING_RATE = 8
 
-
-class RenforceData(ABC):
-    def __init__(self, sensor_name, header, start_time, protobuf_type, callbacks):
+class DataManager(ABC):
+    def __init__(self, sensor_name, sampling_rate, header, start_time, protobuf_type):
         """
         @param header: header of the data
         @param start_time: start time of the data
         @param protobuf_type: type of the protobuf message
         """
         self._sensor_name = sensor_name
+        self._sampling_rate = sampling_rate
         self.__header = header
         self.__data = []
         self.__start_time = start_time
         self._protobuf_type = protobuf_type
-
-        self.__callbacks = callbacks
         self.__lock = threading.Lock()
 
     def get_header(self):
         return self.__header
-
-    def add_callback(self, callback):
-        """
-        @param callback: callback method to add with the below parameters
-            - data: RenforceData
-        """
-        self.__callbacks.append(callback)
 
     def _add_data(self, data):
         """
@@ -113,18 +102,18 @@ class RenforceData(ABC):
             data, timestamp = await protobuf_decode(self._protobuf_type, data)
             timestamp -= self.__start_time
             self._process_decoded_data(timestamp, data)
-
-            for callback in self.__callbacks:
-                callback(self)
-
         return data_callback
 
     @staticmethod
-    def get_instance(sensor_name, protobuf_type, start_time, callbacks):
+    def get_instance(sensor):
+        name = sensor.get_name()
+        start_time = sensor.get_start_time()
+        sampling_rate = sensor.get_sampling_rate()
+        protobuf_type = "RENFORCE ECG" if "ECG" in name else "RENFORCE EDA"
         if protobuf_type == "RENFORCE ECG":
-            return ECGData(sensor_name, start_time, protobuf_type, callbacks)
-        elif protobuf_type == "RENFORCE EDA":
-            return EDAData(sensor_name, start_time, protobuf_type, callbacks)
+            return ECGDataManager(name, sampling_rate, start_time, protobuf_type)
+        else:
+            return EDADataManager(name, sampling_rate, start_time, protobuf_type)
 
 
 # ---------------------------
@@ -132,35 +121,33 @@ class RenforceData(ABC):
 # ---------------------------
 
 
-class ECGData(RenforceData):
-    sampling_rate = ECG_SAMPLING_RATE
+class ECGDataManager(DataManager):
 
-    def __init__(self, sensor_name, start_time, protobuf_type, callbacks):
+    def __init__(self, sensor_name, sampling_rate, start_time, protobuf_type):
         super().__init__(
             sensor_name=sensor_name,
+            sampling_rate=sampling_rate,
             header=["time_ecg (s)", "ecg (mV)"],
             start_time=start_time,
             protobuf_type=protobuf_type,
-            callbacks=callbacks,
         )
 
     def _process_decoded_data(self, timestamp, data):
         data_to_add = []
         for i in range(len(data)):
-            data_to_add.append([timestamp + i * (1 / self.sampling_rate), data[i]])
+            data_to_add.append([timestamp + i * (1 / self._sampling_rate), data[i]])
         self._add_data(data_to_add)
 
 
-class EDAData(RenforceData):
-    sampling_rate = EDA_SAMPLING_RATE
+class EDADataManager(DataManager):
 
-    def __init__(self, sensor_name, start_time, protobuf_type, callbacks):
+    def __init__(self, sensor_name, sampling_rate, start_time, protobuf_type):
         super().__init__(
             sensor_name=sensor_name,
+            sampling_rate=sampling_rate,
             header=["time_eda (s)", "12Hz"],
             start_time=start_time,
             protobuf_type=protobuf_type,
-            callbacks=callbacks,
         )
 
     def _process_decoded_data(self, timestamp, data):

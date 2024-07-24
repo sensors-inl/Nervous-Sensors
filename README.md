@@ -18,14 +18,15 @@ pip install nervous-sensors
 Usage: nervous [OPTIONS]
 
 Options:
-  -g, --gui           Show real-time data graph
-  -f, --folder PATH   Save CSV data files in folder
-  -l, --lsl           Send sensor data on LSL outlets
-  -s, --sensors TEXT  ECGxxx,EDAxxx... : Give the name of the sensors you want
-                      to use. Make sure to put 'ecg' or 'eda' in their name so
-                      the program will know which type of sensor you want to
-                      use (not case sensitive).
-  --help              Show this message and exit.
+  -s, --sensors TEXT      ECGxxx,EDAxxx... : Give the name of the sensors you
+                          want to use. Make sure to put 'ECG' or 'EDA' in
+                          their name so the program will know which type of
+                          sensor you want to use (not case sensitive).
+  -g, --gui               Show real-time data graph.
+  -f, --folder PATH       Save CSV data files in folder.
+  -l, --lsl               Send sensor data on LSL outlets.
+  -p, --parallel INTEGER  Number of parallel connection tentatives authorized.
+  --help                  Show this message and exit.
 ```
 
 ### Example

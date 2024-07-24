@@ -21,6 +21,7 @@ pandas = "^2.2.1"
 plotly = "^5.22.0"
 dash = "^2.16.1"
 click = "^8.1.7"
+aioconsole = "^0.7.1"
 
 [tool.poetry.group.dev]
 optional = true

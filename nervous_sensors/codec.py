@@ -1,17 +1,19 @@
 import time
 
 import numpy as np
-import renforce_pb2
 from cobs import cobs
+from . import pb2
 
-ecg_buffer_msg = renforce_pb2.EcgBuffer()
-eda_buffer_msg = renforce_pb2.EdaBuffer()
+from . import pb2
+
+ecg_buffer_msg = pb2.EcgBuffer()
+eda_buffer_msg = pb2.EdaBuffer()
 __all__ = ["cobs_decode", "protobuf_decode"]
 
 
 async def time_encode():
     t = time.time()
-    timestamp = renforce_pb2.Timestamp()
+    timestamp = pb2.Timestamp()
     timestamp.time = int(t)
     timestamp.us = int((t - int(t)) * 1_000_000)
     serialized_data = timestamp.SerializeToString()
@@ -32,9 +34,9 @@ async def protobuf_decode(type, data):
     # parse the serialized message from a byte string
     pb_buffer_msg = None
     if type == "RENFORCE ECG":
-        pb_buffer_msg = renforce_pb2.EcgBuffer()
+        pb_buffer_msg = pb2.EcgBuffer()
     elif type == "RENFORCE EDA":
-        pb_buffer_msg = renforce_pb2.EdaBuffer()
+        pb_buffer_msg = pb2.EdaBuffer()
     else:
         print("Unknown protobuf message type")
         return None
