@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nervous-sensors"
-version = "0.1.0"
+version = "0.0.1"
 description = ""
 authors = ["Hugo Buy", "Tristan Habémont", "Bertrand Massot <bertrand.massot@insa-lyon.fr>"]
 license = "MIT"
