@@ -42,7 +42,7 @@ target-version = "py312"
 lint.select = ["I", "E", "F", "C"]
 
 [tool.ruff.lint.per-file-ignores]
-"nervous_sensors/renforce_pb2.py" = ["F821", "E501"]
+"nervous_sensors/pb2.py" = ["F821", "E501"]
 
 [build-system]
 requires = ["poetry-core"]

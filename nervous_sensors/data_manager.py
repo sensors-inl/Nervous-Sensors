@@ -102,6 +102,7 @@ class DataManager(ABC):
             data, timestamp = await protobuf_decode(self._protobuf_type, data)
             timestamp -= self.__start_time
             self._process_decoded_data(timestamp, data)
+
         return data_callback
 
     @staticmethod
@@ -122,7 +123,6 @@ class DataManager(ABC):
 
 
 class ECGDataManager(DataManager):
-
     def __init__(self, sensor_name, sampling_rate, start_time, protobuf_type):
         super().__init__(
             sensor_name=sensor_name,
@@ -140,7 +140,6 @@ class ECGDataManager(DataManager):
 
 
 class EDADataManager(DataManager):
-
     def __init__(self, sensor_name, sampling_rate, start_time, protobuf_type):
         super().__init__(
             sensor_name=sensor_name,

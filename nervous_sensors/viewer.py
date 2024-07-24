@@ -12,10 +12,9 @@ from flask import Flask, request
 from plotly.subplots import make_subplots
 from werkzeug.serving import make_server
 
-
 server = Flask(__name__)
 app = dash.Dash(__name__, server=server, external_stylesheets=[dbc.themes.BOOTSTRAP])
-log = logging.getLogger('werkzeug')
+log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
 window_sec_size = 20
 
@@ -69,7 +68,7 @@ class RenforceViewer:
             return s.getsockname()[1]
 
     def stop_server(self):
-        requests.post(f'http://localhost:{self.port}/shutdown')
+        requests.post(f"http://localhost:{self.port}/shutdown")
 
     def run_server(self):
         # Create and start the Flask server in a separate thread
@@ -113,14 +112,13 @@ def update_data(n):
             data_value = data.iloc[:, 1].tolist()
             data_size = len(data_value)
 
-
             if data_size < n_points:
                 data_value = [None] + data_value
                 time = [time[0] - (time[1] - time[0]) * (n_points - data_size)] + time
 
             name = sensor.get_name()
-            name = f'{name[:3]} {name[3:]}'
-            suffix = ' (mV)' if sensor.get_type() == 'ECG' else ' (µS)'
+            name = f"{name[:3]} {name[3:]}"
+            suffix = " (mV)" if sensor.get_type() == "ECG" else " (µS)"
 
             fig.add_trace(
                 go.Scatter(

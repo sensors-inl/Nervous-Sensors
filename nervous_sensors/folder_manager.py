@@ -11,8 +11,8 @@ class FolderManager(AsyncManager):
         super().__init__()
         self._sensor_times = [
             {
-                'sensor': sensor,
-                'time': 0,
+                "sensor": sensor,
+                "time": 0,
             }
             for sensor in sensors
         ]
@@ -25,18 +25,16 @@ class FolderManager(AsyncManager):
 
         # Create the csv files with header
         for sensor_time in self._sensor_times:
-            sensor = sensor_time['sensor']
+            sensor = sensor_time["sensor"]
             path = self.get_path(sensor)
             header = sensor.data_manager.get_header()
             with open(path, "w", newline="") as f_object:
                 writer = csv.DictWriter(f_object, fieldnames=header, delimiter=";")
                 writer.writeheader()
 
-
     def get_path(self, sensor):
         name = sensor.get_name()
         return f"{self._folder_path}/{sensor.get_start_time_str()}_{name[3:]}_{name[3:]}.csv"
-
 
     async def start(self):
         print_start_info("Starting folder manager")
@@ -47,11 +45,9 @@ class FolderManager(AsyncManager):
             except TimeoutError:
                 await self.write_all_csv()
 
-
     async def stop(self):
         print_stop_info("Stopping folder manager")
         self._stop_event.set()
-
 
     async def write_all_csv(self):
         async with asyncio.TaskGroup() as tg:
@@ -59,8 +55,8 @@ class FolderManager(AsyncManager):
                 tg.create_task(self.write_csv(sensor_time))
 
     async def write_csv(self, sensor_time):
-        sensor = sensor_time['sensor']
-        time = sensor_time['time']
+        sensor = sensor_time["sensor"]
+        time = sensor_time["time"]
         file_path = self.get_path(sensor)
 
         with open(file_path, "a", newline="") as f_object:
@@ -69,9 +65,4 @@ class FolderManager(AsyncManager):
             rows = new_data.values.tolist()
             writer_object.writerows(rows)
             if not new_data.empty:
-                sensor_time['time'] = new_data.iloc[-1, 0]
-
-
-
-
-
+                sensor_time["time"] = new_data.iloc[-1, 0]

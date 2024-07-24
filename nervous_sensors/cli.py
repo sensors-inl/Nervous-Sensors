@@ -1,12 +1,14 @@
-import sys
 import asyncio
+import sys
 from asyncio import TaskGroup
+
 import aioconsole
-from . import cli_utils
-from .cli_utils import print_bold_section, print_general_info, print_stop_info
 import click
-from .connection_manager import ConnectionManager
+
+from . import cli_utils
 from .cli_listener import CLIListener
+from .cli_utils import print_bold_section, print_general_info, print_stop_info
+from .connection_manager import ConnectionManager
 
 
 @click.command()
@@ -54,8 +56,8 @@ def extract_sensors(sensors):
     """
     :return: all ECG/EDAxxx for formats : ECG/EDAxxx, ECG/EDA_xxx and ECG/EDA-xxx
     """
-    if '_' in sensors or '-' in sensors:
-        return [f'{s[:3]}{s[4:]}' for s in sensors if "ecg" in s.lower() or "eda" in s.lower()]
+    if "_" in sensors or "-" in sensors:
+        return [f"{s[:3]}{s[4:]}" for s in sensors if "ecg" in s.lower() or "eda" in s.lower()]
     else:
         return [s for s in sensors if "ecg" in s.lower() or "eda" in s.lower()]
 
@@ -73,4 +75,3 @@ async def run_app(sensor_names, gui, folder, lsl, parallel_connection_authorized
             tg.create_task(manager.start())
     except KeyboardInterrupt:
         await manager.stop()
-

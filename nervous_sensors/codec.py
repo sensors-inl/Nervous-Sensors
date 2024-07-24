@@ -2,7 +2,6 @@ import time
 
 import numpy as np
 from cobs import cobs
-from . import pb2
 
 from . import pb2
 

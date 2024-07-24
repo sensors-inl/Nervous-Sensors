@@ -1,17 +1,18 @@
 import io
 
 blacklist = [
-    'Flask',
-    'Dash is running',
-    '* Debug mode',
-    'Address already',
-    'Port',
-    'is in use by another program',
-    'netinterfaces',
-    'udp_server',
-    'netif',
-    'multicast',
+    "Flask",
+    "Dash is running",
+    "* Debug mode",
+    "Address already",
+    "Port",
+    "is in use by another program",
+    "netinterfaces",
+    "udp_server",
+    "netif",
+    "multicast",
 ]
+
 
 class CLIListener:
     def __init__(self, original_stream):

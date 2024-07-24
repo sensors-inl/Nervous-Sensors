@@ -1,12 +1,12 @@
 import asyncio
 import time
 
-from .gui_manager import GUIManager
-from .nervous_sensor import NervousSensor
+from .async_manager import AsyncManager
 from .cli_utils import print_bold_section, print_general_info
 from .folder_manager import FolderManager
+from .gui_manager import GUIManager
 from .lsl_manager import LSLManager
-from .async_manager import AsyncManager
+from .nervous_sensor import NervousSensor
 
 
 class ConnectionManager(AsyncManager):
@@ -44,7 +44,6 @@ class ConnectionManager(AsyncManager):
             for async_manager in self._async_managers:
                 tg.create_task(async_manager.stop())
 
-
     # Event handlers
 
     def on_sensor_fail_to_connect(self, sensor: NervousSensor):
@@ -60,7 +59,6 @@ class ConnectionManager(AsyncManager):
     def on_sensor_disconnect(self, sensor: NervousSensor):
         print(f"{sensor.get_colored_name()} disconnected")
         self._all_connected.clear()
-
 
     # Sensors management
 
@@ -97,7 +95,6 @@ class ConnectionManager(AsyncManager):
             await asyncio.sleep(120)
             self.print_battery_level()
 
-
     # Sensors parallel actions
 
     async def manage_all_connections(self):
@@ -111,7 +108,6 @@ class ConnectionManager(AsyncManager):
 
     async def disconnect_all(self):
         await self._run_parallel(lambda sensor: sensor.disconnect())
-
 
     # Utils
 

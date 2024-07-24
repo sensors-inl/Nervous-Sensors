@@ -4,10 +4,9 @@ from datetime import datetime
 from bleak import BleakClient, BleakScanner
 from bleak.exc import BleakDeviceNotFoundError, BleakError
 
-from .data_manager import DataManager
+from .cli_utils import RESET, get_color
 from .codec import time_encode
-from .cli_utils import get_color, RESET
-
+from .data_manager import DataManager
 
 # Sampling rates
 ECG_SAMPLING_RATE = 512
@@ -29,7 +28,6 @@ class NervousSensor:
         self._data_manager = DataManager.get_instance(self)
         NervousSensor.n += 1
 
-
     # Getters
 
     def get_start_time(self):
@@ -43,10 +41,10 @@ class NervousSensor:
         return self._start_time_str
 
     def get_type(self) -> str:
-        return 'ECG' if 'ecg' in self._name.lower() else 'EDA'
+        return "ECG" if "ecg" in self._name.lower() else "EDA"
 
     def get_sampling_rate(self) -> int:
-        return ECG_SAMPLING_RATE if 'ecg' in self._name.lower() else EDA_SAMPLING_RATE
+        return ECG_SAMPLING_RATE if "ecg" in self._name.lower() else EDA_SAMPLING_RATE
 
     def get_name(self) -> str:
         return self._name
@@ -59,7 +57,6 @@ class NervousSensor:
 
     def get_battery_level(self) -> str | int:
         return self._battery_level
-
 
     # Bleak methods
 
@@ -79,6 +76,7 @@ class NervousSensor:
         """
         Blocking until the code complete (short period)
         """
+
         def battery_callback(_, data):
             self._battery_level = int.from_bytes(data, byteorder="little")
 
@@ -88,8 +86,7 @@ class NervousSensor:
                 battery_callback,
             )
             await self._client.start_notify(
-                "6e400003-b5a3-f393-e0a9-e50e24dcca9e",
-                self._data_manager.get_data_callback()
+                "6e400003-b5a3-f393-e0a9-e50e24dcca9e", self._data_manager.get_data_callback()
             )
             return True
         except (BleakError, AttributeError):
@@ -140,5 +137,3 @@ class NervousSensor:
                 self._connection_manager.on_sensor_disconnect(self)
             else:
                 self._connection_manager.on_sensor_fail_to_connect(self)
-
-
