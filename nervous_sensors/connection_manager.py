@@ -92,8 +92,11 @@ class ConnectionManager(AsyncManager):
 
     async def manage_battery_level(self):
         while not self._stop_event.is_set():
-            await asyncio.sleep(120)
-            self.print_battery_level()
+            try:
+                await asyncio.wait_for(self._stop_event.wait(), timeout=120)
+                self.print_battery_level()
+            except TimeoutError:
+                self.print_battery_level()
 
     # Sensors parallel actions
 

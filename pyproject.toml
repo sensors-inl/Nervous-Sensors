@@ -29,6 +29,7 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
+pytest-asyncio = "^0.23.8"
 pre-commit = "^3.7.1"
 
 [tool.setuptools.packages.find]
@@ -44,6 +45,7 @@ lint.select = ["I", "E", "F", "C"]
 
 [tool.ruff.lint.per-file-ignores]
 "nervous_sensors/pb2.py" = ["F821", "E501"]
+"nervous_sensors/nervous_sensor.py" = ["E722"]
 
 [build-system]
 requires = ["poetry-core"]

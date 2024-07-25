@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime
 
 from bleak import BleakClient, BleakScanner
-from bleak.exc import BleakDeviceNotFoundError, BleakError
+from bleak.exc import BleakError
 
 from .cli_utils import RESET, get_color
 from .codec import time_encode
@@ -100,7 +100,7 @@ class NervousSensor:
             await self._client.stop_notify("00002a19-0000-1000-8000-00805f9b34fb")
             await self._client.stop_notify("6e400003-b5a3-f393-e0a9-e50e24dcca9e")
             return True
-        except (BleakError, KeyError, AttributeError, ValueError):
+        except:
             return False
 
     async def connect(self):
@@ -132,7 +132,7 @@ class NervousSensor:
 
             self._client = None
 
-        except BleakDeviceNotFoundError:
+        except:
             if connection_was_established:
                 self._connection_manager.on_sensor_disconnect(self)
             else:
