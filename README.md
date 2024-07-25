@@ -13,7 +13,7 @@ pip install nervous-sensors
 ```
 
 > [!NOTE]
-> Requires a Python version >=3.10 and <3.13
+> Requires python version 3.10, 3.11 or 3.12
 
 ## CLI
 
