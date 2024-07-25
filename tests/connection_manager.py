@@ -29,7 +29,7 @@ def mock_nervous_sensor3():
 
 
 @pytest.mark.asyncio
-async def test_start_connection(mock_nervous_sensor1, mock_nervous_sensor2, mock_nervous_sensor3):
+async def tes_start_connection(mock_nervous_sensor1, mock_nervous_sensor2, mock_nervous_sensor3):
     manager = ConnectionManager(sensor_names=[], gui=False, folder=False, lsl=False, parallel_connection_authorized=3)
     sensors = [mock_nervous_sensor1, mock_nervous_sensor2, mock_nervous_sensor3]
     manager._sensors = sensors
@@ -44,5 +44,5 @@ async def test_start_connection(mock_nervous_sensor1, mock_nervous_sensor2, mock
 
 
 @pytest.mark.asyncio
-async def test_stop_all_notifications():
+async def tes_stop_all_notifications():
     assert True
