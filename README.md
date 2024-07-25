@@ -12,7 +12,7 @@ the user.
 pip install nervous-sensors
 ```
 
-> [!WARNING]
+> [!NOTE]
 > Requires a Python version >=3.10 and <3.13
 
 ## CLI
