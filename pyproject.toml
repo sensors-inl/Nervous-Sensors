@@ -11,8 +11,8 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "3.12"
-bleak = "0.22.2"
+python = ">=3.9,<3.13"
+bleak = "^0.22.2"
 cobs = "^1.2.0"
 numpy = "^1.26.4"
 protobuf = "^4.23.4"
