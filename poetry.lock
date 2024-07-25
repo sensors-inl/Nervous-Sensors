@@ -418,7 +418,6 @@ files = [
 [package.dependencies]
 blinker = ">=1.6.2"
 click = ">=8.1.3"
-importlib-metadata = {version = ">=3.6.0", markers = "python_version < \"3.10\""}
 itsdangerous = ">=2.1.2"
 Jinja2 = ">=3.1.2"
 Werkzeug = ">=3.0.0"
@@ -1408,5 +1407,5 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.9,<3.13"
-content-hash = "c5a74abe951747d887dae3fd3e83d9340f32f00ca6a3f50530df37ac9570de1a"
+python-versions = ">=3.10,<3.13"
+content-hash = "7b3547e9c3458d3477ca1f7cf61bf2fca14cab67ea2a9573453bad9dc0a39c03"
