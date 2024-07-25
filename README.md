@@ -8,12 +8,12 @@ the user.
 
 ## Installation
 
+> [!NOTE]
+> Requires python version 3.10, 3.11 or 3.12
+
 ```bash
 pip install nervous-sensors
 ```
-
-> [!NOTE]
-> Requires python version 3.10, 3.11 or 3.12
 
 ## CLI
 
