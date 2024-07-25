@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "nervous-sensors"
-version = "0.0.1"
+version = "0.0.2"
 description = ""
-authors = ["Hugo Buy", "Tristan Habémont", "Bertrand Massot <bertrand.massot@insa-lyon.fr>"]
+authors = ["Bertrand Massot <bertrand.massot@insa-lyon.fr>", "Tristan Habémont", "Hugo Buy"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/sensors-inl/Nervous"
@@ -12,7 +12,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.12"
-bleak = "^0.20.2"
+bleak = "^0.20"
 cobs = "^1.2.0"
 numpy = "^1.26.4"
 protobuf = "^4.23.4"
