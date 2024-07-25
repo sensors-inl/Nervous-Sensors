@@ -10,10 +10,9 @@ the user.
 
 > [!NOTE]
 > Requires python version 3.10, 3.11 or 3.12
-
-```bash
-pip install nervous-sensors
-```
+> ```bash
+> pip install nervous-sensors
+> ```
 
 ## CLI
 
