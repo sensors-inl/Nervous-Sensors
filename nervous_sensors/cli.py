@@ -71,7 +71,7 @@ async def run_app(sensor_names, gui, folder, lsl, parallel_connection_authorized
 
     try:
         async with TaskGroup() as tg:
-            tg.create_task(listen_enter())
+            # tg.create_task(listen_enter()) # TODO remove or not ?
             tg.create_task(manager.start())
     except KeyboardInterrupt:
         await manager.stop()

@@ -10,7 +10,7 @@ from .nervous_sensor import NervousSensor
 
 
 class ConnectionManager(AsyncManager):
-    def __init__(self, sensor_names, gui, folder, lsl, parallel_connection_authorized):
+    def __init__(self, sensor_names, gui=False, folder=False, lsl=False, parallel_connection_authorized=3):
         super().__init__()
         self._sensors = [
             NervousSensor(name=name, start_time=int(time.time()), timeout=10, connection_manager=self)
@@ -76,7 +76,7 @@ class ConnectionManager(AsyncManager):
             await self.start_all_notifications()
             print_general_info("All notifications started")
             while self._all_connected.is_set():
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.1)
             print_general_info("All sensors are not connected")
             await self.stop_all_notifications()
             print_general_info("All notifications stopped")
