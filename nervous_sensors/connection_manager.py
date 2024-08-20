@@ -32,6 +32,7 @@ class ConnectionManager(AsyncManager):
         async with asyncio.TaskGroup() as tg:
             for async_manager in self._async_managers:
                 tg.create_task(async_manager.start())
+                await asyncio.sleep(1)
             tg.create_task(self.manage_all_connections())
             tg.create_task(self.manage_all_notifications())
             tg.create_task(self.manage_battery_level())
