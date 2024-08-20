@@ -28,7 +28,7 @@ def cli(sensors, gui, folder, lsl, parallel):
         true_sensors = extract_sensors(sensors)
 
         if not true_sensors:
-            print_stop_info("No sensors follows -s/--sensors option, please use synthax ECGxxx,EDAxxx...")
+            print_stop_info("No sensors follows -s/--sensors option, please use \"ECG XXXX\",\"EDA XXXX\" format")
             sys.exit(0)
         else:
             print_general_info("Press 'enter' to stop the program properly")
@@ -43,13 +43,13 @@ def cli(sensors, gui, folder, lsl, parallel):
         print_general_info(f"- Folder saving enabled in: '{folder}'")
     if lsl:
         print_general_info("- LSL enabled")
-    if parallel:
-        print_general_info(f"- Parallel connection authorized: {parallel}")
+    #if parallel:
+    #    print_general_info(f"- Parallel connection authorized: {parallel}")
 
     try:
         asyncio.run(run_app(true_sensors, gui, folder, lsl, parallel))
     except:
-        print("Shutting down Nervous framework")
+        print_stop_info("Shutting down Nervous framework")
         os._exit(0)
 
 

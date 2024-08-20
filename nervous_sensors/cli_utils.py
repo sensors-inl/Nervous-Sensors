@@ -3,9 +3,8 @@ GREEN = "\033[32m"
 RESET = "\033[0m"
 
 SENSORS_HELP = (
-    "ECGxxx,EDAxxx... : Give the name of the sensors you want to use. "
-    "Make sure to put 'ECG' or 'EDA' in their name so the program will know "
-    "which type of sensor you want to use (not case sensitive)."
+    "\"ECG XXXX\",\"EDA XXXX\" : Give the name of the sensors you want to use. "
+    "XXXX should be replaced with the serial number of the sensor."
 )
 GUI_HELP = "Show real-time data graph."
 FOLDER_HELP = "Save CSV data files in folder."
