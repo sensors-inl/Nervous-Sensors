@@ -10,7 +10,7 @@ from .nervous_sensor import NervousSensor
 
 
 class ConnectionManager(AsyncManager):
-    def __init__(self, sensor_names, gui=False, folder=False, lsl=False, parallel_connection_authorized=3):
+    def __init__(self, sensor_names, gui=False, folder=False, lsl=False, parallel_connection_authorized=1):
         super().__init__()
         self._sensors = [
             NervousSensor(name=name, start_time=int(time.time()), timeout=10, connection_manager=self)
