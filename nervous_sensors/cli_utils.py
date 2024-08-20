@@ -31,10 +31,10 @@ def print_general_info(info):
 
 def get_color(i):
     return [
-        "\033[34m",  # blue
-        "\033[35m",  # magenta
-        "\033[36m",  # cyan
-        "\033[33m",  # yellow
+        #"\033[34m",  # blue
+        #"\033[35m",  # magenta skip magenta because of PS background color
+        #"\033[36m",  # cyan
+        #"\033[33m",  # yellow
         "\033[91m",  # light red
         "\033[92m",  # light green
         "\033[93m",  # light yellow
