@@ -54,8 +54,8 @@ class LSLManager(AsyncManager):
         data = sensor.data_manager.get_latest_data(latest_data=time)
         try:
             sensor_lsl["time"] = data.iloc[-1, 0]
-            data.iloc[:,0] = data.iloc[:,0] + LSLManager._start_time_lsl
-            timestamp_list = data.iloc[:,0].tolist()
+            data.iloc[:, 0] = data.iloc[:, 0] + LSLManager._start_time_lsl
+            timestamp_list = data.iloc[:, 0].tolist()
             data_list = data.iloc[:, 1].tolist()
             outlet.push_chunk(
                 x=data_list,
@@ -76,8 +76,8 @@ class LSLManager(AsyncManager):
 
         try:
             sensor_lsl["time"] = data.iloc[-1, 0]
-            data.iloc[:,0] = data.iloc[:,0] + LSLManager._start_time_lsl
-            timestamp_list = data.iloc[:,0].tolist()
+            data.iloc[:, 0] = data.iloc[:, 0] + LSLManager._start_time_lsl
+            timestamp_list = data.iloc[:, 0].tolist()
             data_list = data.iloc[:, 1].tolist()
             outlet.push_chunk(
                 x=data_list,
@@ -96,8 +96,8 @@ class LSLManager(AsyncManager):
 
         try:
             sensor_lsl["time"] = data.iloc[-1, 0]
-            data.iloc[:,0] = data.iloc[:,0] + LSLManager._start_time_lsl
-            timestamp_list = data.iloc[:,0].tolist()
+            data.iloc[:, 0] = data.iloc[:, 0] + LSLManager._start_time_lsl
+            timestamp_list = data.iloc[:, 0].tolist()
             data_list = data.iloc[:, 1].tolist()
             outlet.push_chunk(
                 x=data_list,
