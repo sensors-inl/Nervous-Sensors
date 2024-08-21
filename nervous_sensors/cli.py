@@ -1,6 +1,6 @@
 import asyncio
-import sys
 import os
+import sys
 from asyncio import TaskGroup
 
 import click
