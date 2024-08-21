@@ -48,7 +48,7 @@ def cli(sensors, gui, folder, lsl, parallel):
 
     try:
         asyncio.run(run_app(true_sensors, gui, folder, lsl, parallel))
-    except:
+    except KeyboardInterrupt:
         print_stop_info("Shutting down Nervous framework")
         os._exit(0)
 
