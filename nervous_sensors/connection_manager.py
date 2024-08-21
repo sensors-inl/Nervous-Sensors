@@ -20,12 +20,12 @@ class ConnectionManager(AsyncManager):
         self._all_connected = asyncio.Event()
         self._async_managers = []
 
-        if gui:
-            self._async_managers.append(GUIManager(self._sensors))
-        if folder:
-            self._async_managers.append(FolderManager(self._sensors, folder))
         if lsl:
             self._async_managers.append(LSLManager(self._sensors))
+        if folder:
+            self._async_managers.append(FolderManager(self._sensors, folder))
+        if gui:
+            self._async_managers.append(GUIManager(self._sensors))
 
     async def start(self):
         print_bold_section("Starting connection manager")

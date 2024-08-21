@@ -37,7 +37,8 @@ class FolderManager(AsyncManager):
         return f"{self._folder_path}/{sensor.get_start_time_str()}_{name[:3]}_{name[3:]}.csv"
 
     async def start(self):
-        print_start_info("Starting folder manager")
+        print_start_info("Starting Folder manager")
+        print("Data files will be created in folder", self._folder_path)
         while not self._stop_event.is_set():
             try:
                 await asyncio.wait_for(self._stop_event.wait(), timeout=self._update_time)
@@ -46,7 +47,7 @@ class FolderManager(AsyncManager):
                 await self.write_all_csv()
 
     async def stop(self):
-        print_stop_info("Stopping folder manager")
+        print_stop_info("Stopping Folder manager")
         self._stop_event.set()
 
     async def write_all_csv(self):
