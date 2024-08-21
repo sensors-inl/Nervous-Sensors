@@ -50,10 +50,10 @@ class NervousSensor:
         return self._name
 
     def get_colored_name(self) -> str:
-        return f"[{self._color}{self._name[:3]} {self._name[3:]}{RESET}]"
+        return f"[{self._color}{self._name}{RESET}]"
 
     def get_ble_name(self) -> str:
-        return f"RENFORCE {self._name[:3]} {self._name[3:]}"
+        return f"RENFORCE {self._name}"
 
     def get_battery_level(self) -> str | int:
         return self._battery_level
@@ -100,7 +100,7 @@ class NervousSensor:
             await self._client.stop_notify("00002a19-0000-1000-8000-00805f9b34fb")
             await self._client.stop_notify("6e400003-b5a3-f393-e0a9-e50e24dcca9e")
             return True
-        except:
+        except Exception:
             return False
 
     async def connect(self):
@@ -132,7 +132,7 @@ class NervousSensor:
 
             self._client = None
 
-        except:
+        except Exception:
             if connection_was_established:
                 self._connection_manager.on_sensor_disconnect(self)
             else:

@@ -9,7 +9,7 @@ from .cli_utils import print_start_info, print_stop_info
 class LSLManager(AsyncManager):
     _start_time_lsl = local_clock()
 
-    def __init__(self, sensors, update_time=0.01):
+    def __init__(self, sensors, update_time=0.5):
         super().__init__()
         self._sensors_lsl = [
             {
@@ -31,6 +31,7 @@ class LSLManager(AsyncManager):
 
     async def start(self):
         print_start_info("Starting LSL manager")
+        print("LSL offset clock:", self._start_time_lsl)
         while not self._stop_event.is_set():
             try:
                 await asyncio.wait_for(self._stop_event.wait(), timeout=self._update_time)
@@ -40,15 +41,29 @@ class LSLManager(AsyncManager):
 
     def send_data(self):
         for sensor_lsl in self._sensors_lsl:
-            sensor = sensor_lsl["sensor"]
-            if sensor.get_type() == "ECG":
-                self.send_ecg_data(sensor_lsl)
-            else:
-                self.send_eda_data(sensor_lsl)
+            self.send_data_generic(sensor_lsl)
 
     async def stop(self):
         print_stop_info("Stopping LSL manager")
         self._stop_event.set()
+
+    def send_data_generic(self, sensor_lsl):
+        sensor = sensor_lsl["sensor"]
+        outlet = sensor_lsl["outlet"]
+        time = sensor_lsl["time"]
+        data = sensor.data_manager.get_latest_data(latest_data=time)
+        try:
+            sensor_lsl["time"] = data.iloc[-1, 0]
+            data.iloc[:,0] = data.iloc[:,0] + LSLManager._start_time_lsl
+            timestamp_list = data.iloc[:,0].tolist()
+            data_list = data.iloc[:, 1].tolist()
+            outlet.push_chunk(
+                x=data_list,
+                timestamp=timestamp_list,
+                pushthrough=True,
+            )
+        except IndexError:
+            pass  # No data to send
 
     def send_ecg_data(self, sensor_lsl):
         sensor = sensor_lsl["sensor"]
@@ -60,18 +75,13 @@ class LSLManager(AsyncManager):
         data = sensor.data_manager.get_latest_data(latest_data=time)
 
         try:
-            first_timestamp = data.iloc[0, 0]
-            last_timestamp = data.iloc[-1, 0]
+            sensor_lsl["time"] = data.iloc[-1, 0]
+            data.iloc[:,0] = data.iloc[:,0] + LSLManager._start_time_lsl
+            timestamp_list = data.iloc[:,0].tolist()
             data_list = data.iloc[:, 1].tolist()
-            timestamp_offset = (len(data_list) - 1) * 1 / sensor.get_sampling_rate()
-            sensor_lsl["time"] = last_timestamp
-
-            if len(data_list) != 100:
-                return
-
             outlet.push_chunk(
-                data_list,
-                timestamp=first_timestamp + LSLManager._start_time_lsl + timestamp_offset,
+                x=data_list,
+                timestamp=timestamp_list,
                 pushthrough=True,
             )
         except IndexError:
@@ -85,17 +95,13 @@ class LSLManager(AsyncManager):
         data = sensor.data_manager.get_latest_data(latest_data=time)
 
         try:
-            timestamp = data.iloc[-1, 0]
+            sensor_lsl["time"] = data.iloc[-1, 0]
+            data.iloc[:,0] = data.iloc[:,0] + LSLManager._start_time_lsl
+            timestamp_list = data.iloc[:,0].tolist()
             data_list = data.iloc[:, 1].tolist()
-            data = data_list[0]
-            sensor_lsl["time"] = timestamp
-
-            if len(data_list) > 1:
-                return
-
-            outlet.push_sample(
-                [data],
-                timestamp=timestamp + LSLManager._start_time_lsl,
+            outlet.push_chunk(
+                x=data_list,
+                timestamp=timestamp_list,
                 pushthrough=True,
             )
         except IndexError:

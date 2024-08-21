@@ -1,8 +1,8 @@
 import asyncio
 import sys
+import os
 from asyncio import TaskGroup
 
-import aioconsole
 import click
 
 from . import cli_utils
@@ -28,7 +28,7 @@ def cli(sensors, gui, folder, lsl, parallel):
         true_sensors = extract_sensors(sensors)
 
         if not true_sensors:
-            print_stop_info("No sensors follows -s/--sensors option, please use synthax ECGxxx,EDAxxx...")
+            print_stop_info("No sensors follows -s/--sensors option, please use \"ECG XXXX\",\"EDA XXXX\" format")
             sys.exit(0)
         else:
             print_general_info("Press 'enter' to stop the program properly")
@@ -43,35 +43,38 @@ def cli(sensors, gui, folder, lsl, parallel):
         print_general_info(f"- Folder saving enabled in: '{folder}'")
     if lsl:
         print_general_info("- LSL enabled")
-    if parallel:
-        print_general_info(f"- Parallel connection authorized: {parallel}")
+    #if parallel:
+    #    print_general_info(f"- Parallel connection authorized: {parallel}")
 
     try:
         asyncio.run(run_app(true_sensors, gui, folder, lsl, parallel))
-    except KeyboardInterrupt:
-        sys.exit(0)
+    except:
+        print_stop_info("Shutting down Nervous framework")
+        os._exit(0)
 
 
 def extract_sensors(sensors):
     """
     :return: all ECG/EDAxxx for formats : ECG/EDAxxx, ECG/EDA_xxx and ECG/EDA-xxx
     """
-    if "_" in sensors or "-" in sensors:
-        return [f"{s[:3]}{s[4:]}" for s in sensors if "ecg" in s.lower() or "eda" in s.lower()]
-    else:
-        return [s for s in sensors if "ecg" in s.lower() or "eda" in s.lower()]
-
+    for i, sensor in enumerate(sensors):
+        sensor = sensor.replace(' ','')
+        sensor = sensor.replace('_','')
+        sensor = sensor.replace('-','')
+        sensor = sensor[:3] + ' ' + sensor[3:]
+        sensors[i] = sensor.upper()
+    return [s for s in sensors if "ECG" in s or "EDA" in s]
 
 async def run_app(sensor_names, gui, folder, lsl, parallel_connection_authorized):
     manager = ConnectionManager(sensor_names, gui, folder, lsl, parallel_connection_authorized)
 
-    async def listen_enter():
-        await aioconsole.ainput()
-        raise KeyboardInterrupt
+    # async def listen_enter():
+    #    await aioconsole.ainput()
+    #    raise KeyboardInterrupt
 
     try:
         async with TaskGroup() as tg:
-            tg.create_task(listen_enter())
+            # tg.create_task(listen_enter()) # TODO remove or not ?
             tg.create_task(manager.start())
-    except KeyboardInterrupt:
+    except Exception:
         await manager.stop()
