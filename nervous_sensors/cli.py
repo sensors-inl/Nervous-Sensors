@@ -61,6 +61,7 @@ def extract_sensors(sensors):
         sensor = sensor.replace(' ','')
         sensor = sensor.replace('_','')
         sensor = sensor.replace('-','')
+        sensor = sensor[:3] + ' ' + sensor[3:]
         sensors[i] = sensor.upper()
     return [s for s in sensors if "ECG" in s or "EDA" in s]
 
