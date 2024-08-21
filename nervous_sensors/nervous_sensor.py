@@ -50,10 +50,10 @@ class NervousSensor:
         return self._name
 
     def get_colored_name(self) -> str:
-        return f"[{self._color}{self._name[:3]} {self._name[3:]}{RESET}]"
+        return f"[{self._color}{self._name}{RESET}]"
 
     def get_ble_name(self) -> str:
-        return f"RENFORCE {self._name[:3]} {self._name[3:]}"
+        return f"RENFORCE {self._name}"
 
     def get_battery_level(self) -> str | int:
         return self._battery_level
