@@ -48,17 +48,17 @@ class ConnectionManager(AsyncManager):
     # Event handlers
 
     def on_sensor_fail_to_connect(self, sensor: NervousSensor):
-        print(f"{sensor.get_colored_name()} failed to connect")
+        print_general_info(f"{sensor.get_colored_name()} failed to connect")
         self._semaphore.release()
 
     def on_sensor_connect(self, sensor: NervousSensor):
-        print(f"{sensor.get_colored_name()} connected")
+        print_general_info(f"{sensor.get_colored_name()} connected")
         self._semaphore.release()
         if all(sensor.is_connected() for sensor in self._sensors):
             self._all_connected.set()
 
     def on_sensor_disconnect(self, sensor: NervousSensor):
-        print(f"{sensor.get_colored_name()} disconnected")
+        print_general_info(f"{sensor.get_colored_name()} disconnected")
         self._all_connected.clear()
 
     # Sensors management
@@ -86,7 +86,7 @@ class ConnectionManager(AsyncManager):
         while not self._stop_event.is_set():
             if not sensor.is_connected():
                 await self._semaphore.acquire()
-                print(f"{sensor.get_colored_name()} tries to connect")
+                print_general_info(f"{sensor.get_colored_name()} tries to connect")
                 await sensor.connect()
             # Avoid one sensor to monopolize the semaphore
             await asyncio.sleep(1)
@@ -123,7 +123,7 @@ class ConnectionManager(AsyncManager):
                 text += " %"
             if not sensor.is_connected():
                 text += " (disconnected)"
-            print(text)
+            print_general_info(text)
 
     async def _run_parallel(self, action):
         async with asyncio.TaskGroup() as tg:
