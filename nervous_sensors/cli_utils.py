@@ -5,13 +5,20 @@ GREEN = "\033[32m"
 RESET = "\033[0m"
 
 SENSORS_HELP = (
-    '"ECG XXXX","EDA XXXX" : Give the name of the sensors you want to use. '
-    "XXXX should be replaced with the serial number of the sensor."
+    '"ECG XXXX","EDA XXXX",... : specify a list of'
+    "sensors name to connect to. Replace XXXX with the"
+    "serial number. Other accepted format are ECGXXXX,"
+    "ECG_XXXX or ECG-XXXX (quotes are unnecessary for those"
+    "formats)."
 )
-GUI_HELP = "Show real-time data graph."
-FOLDER_HELP = "Save CSV data files in folder."
+GUI_HELP = (
+    "Show real-time data graph in web browser."
+    "Get the URL of the webserver in the output console"
+    "when the script is launched."
+)
+FOLDER_HELP = "Save CSV data files in folder." "WARNING: The folder must exist as it won't be created."
 LSL_HELP = "Send sensor data on LSL outlets."
-PARALLEL_HELP = "Number of parallel connection tentatives authorized."
+PARALLEL_HELP = "Number of parallel connection tentatives authorized." "This is optional and should not be set."
 
 
 def printf(*arg, **kwarg):
