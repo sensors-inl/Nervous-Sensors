@@ -1,15 +1,21 @@
 # Nervous Sensors
 
 This project aims at implementing drivers in python to handle connection to
-Bluetooth Low Energy sensors developed in the frame of ANR project RENFORCE.
-It also implements an interface to PLUME Unity plugin to collect data within a
-virtual environment for synchronous recording as well as real-time feedback to
+physiological sensors ECG and EDA developed at the Lyon Institute of
+Nanotechnology (INL).
+Those Bluetooth Low Energy sensors developed in the frame of ANR project
+RENFORCE (grant ANR-22-CE38-0008).
+Sensors data can be plotted in real-time on a local webserver or saved in a
+.csv file.
+It also implements an LSL interface to PLUME Unity plugin to collect data within
+a virtual environment for synchronous recording as well as real-time feedback to
 the user.
 
 ## Installation
 
 > [!NOTE]
-> Requires python version 3.10, 3.11 or 3.12
+> Requires python version 3.11 or 3.12
+>
 > ```bash
 > pip install nervous-sensors
 > ```
@@ -20,25 +26,24 @@ the user.
 Usage: nervous [OPTIONS]
 
 Options:
-  -s, --sensors TEXT      ECGxxx,EDAxxx... : Give the name of the sensors you
-                          want to use. Make sure to put 'ECG' or 'EDA' in
-                          their name so the program will know which type of
-                          sensor you want to use (not case sensitive).
-  -g, --gui               Show real-time data graph.
+  -s, --sensors TEXT      "ECG XXXX","EDA XXXX",... : specify a list of
+                          sensors name to connect to. Replace XXXX with the
+                          serial number. Other accepted format are ECGXXXX,
+                          ECG_XXXX or ECG-XXXX (quotes are unnecessary for those
+                          formats).
+  -g, --gui               Show real-time data graph in web browser.
+                          Get the URL of the webserver in the output console
+                          when the script is launched.
   -f, --folder PATH       Save CSV data files in folder.
+                          WARNING: The folder must exist as it won't be created.
   -l, --lsl               Send sensor data on LSL outlets.
   -p, --parallel INTEGER  Number of parallel connection tentatives authorized.
+                          This is optional and should not be set.
   --help                  Show this message and exit.
 ```
 
 ### Example
 
 ```bash
-nervous -g -f data/csv/ -l -s ECG6543,EDA7201
+nervous -g -f ./data/csv/ -l -s "ECG 6543","EDA 7201"
 ```
-
-## CPU consumption
-
-- BLE : no significant CPU usage was noticed with Bleak
-- Data storage : `TRESH1` & `TRESH2` values in `reforce_lsl.py` file may be
-adjusted according to your system's performance
