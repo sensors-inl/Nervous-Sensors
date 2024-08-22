@@ -5,16 +5,17 @@ physiological sensors ECG and EDA developed at the Lyon Institute of
 Nanotechnology (INL).
 Those Bluetooth Low Energy sensors developed in the frame of ANR project
 RENFORCE (grant ANR-22-CE38-0008).
-Sensors data can be plotted in real-time on a local webserver or saved in a 
+Sensors data can be plotted in real-time on a local webserver or saved in a
 .csv file.
-It also implements an LSL interface to PLUME Unity plugin to collect data within a
-virtual environment for synchronous recording as well as real-time feedback to
+It also implements an LSL interface to PLUME Unity plugin to collect data within
+a virtual environment for synchronous recording as well as real-time feedback to
 the user.
 
 ## Installation
 
 > [!NOTE]
 > Requires python version 3.11 or 3.12
+>
 > ```bash
 > pip install nervous-sensors
 > ```
