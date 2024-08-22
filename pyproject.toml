@@ -12,17 +12,17 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.13"
-bleak = "^0.22.2"
-cobs = "^1.2.0"
-numpy = "^1.26.4"
-protobuf = "^4.23.4"
-pylsl = "^1.16.2"
-pandas = "^2.2.1"
-plotly = "^5.22.0"
-dash = "^2.16.1"
-dash_bootstrap_components = "^1.6.0"
-click = "^8.1.7"
-aioconsole = "^0.7.1"
+bleak = ">=0.22.2"
+cobs = ">=1.2.0"
+numpy = ">=1.26.4"
+protobuf = ">=4.23.4"
+pylsl = ">=1.16.2"
+pandas = ">=2.2.1"
+plotly = ">=5.22.0"
+dash = ">=2.16.1"
+dash_bootstrap_components = ">=1.6.0"
+click = ">=8.1.7"
+aioconsole = ">=0.7.1"
 
 [tool.poetry.group.dev]
 optional = true
