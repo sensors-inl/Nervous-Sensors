@@ -37,27 +37,27 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: 🪶 Install poetry
+    - name: 🪶 Install Poetry
       uses: abatilo/actions-poetry@v2
 
-    - name: 🪶 Set up virtualenv
+    - name: 🪶 Set up Poetry venv in project
       run: |
-        poetry config virtualenvs.in-project true
+        make setup
 
     - uses: actions/cache@v3
-      name: 🪶 Cache the virtualenv
+      name: 🪶 Cache Poetry venv
       with:
         path: ./.venv
         key: venv-${{ hashFiles('poetry.lock') }}
 
-    - name: 📦+🔧 Install the dependencies with dev
+    - name: 📦+🔧 Install package & dev dependencies
       run: |
-        poetry install --with dev
+        make install-dev
 
-    - name: 🧹 Lint with pre-commit
+    - name: 🧹 Lint with ruff & pre-commit
       run: |
-        poetry run pre-commit run --all-files
+        make lint
 
     - name: 🧪 Test with pytest
       run: |
-        poetry run pytest
+        make test

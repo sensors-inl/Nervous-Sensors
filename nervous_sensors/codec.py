@@ -51,6 +51,8 @@ def _reshape_data(type, buffer_msg_data, buffer_msg_timestamp):
     elif type == "RENFORCE EDA":
         real = buffer_msg_data[0].real
         imag = buffer_msg_data[0].imag
-        buffer_data = np.sqrt(np.square(real) + np.square(imag))  # get impedance amgnitude of lowest frequency
+        buffer_data = np.sqrt(
+            np.square(real) + np.square(imag)
+        )  # get impedance amgnitude of lowest frequency
         buffer_data = 1000000 * 1 / buffer_data
     return buffer_data, timestamp

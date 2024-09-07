@@ -21,7 +21,12 @@ window_sec_size = 20
 message_children = [
     html.H3(
         "Sensors are connecting...",
-        style={"display": "flex", "align-items": "center", "justify-content": "center", "height": "100vh"},
+        style={
+            "display": "flex",
+            "align-items": "center",
+            "justify-content": "center",
+            "height": "100vh",
+        },
     )
 ]
 
@@ -78,7 +83,8 @@ class RenforceViewer:
 
         # Start the Dash app in a separate thread
         self.dash_thread = Thread(
-            target=app.run_server, kwargs={"debug": False, "use_reloader": False, "port": self.port}
+            target=app.run_server,
+            kwargs={"debug": False, "use_reloader": False, "port": self.port},
         )
         self.dash_thread.start()
 

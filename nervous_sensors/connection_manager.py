@@ -10,14 +10,19 @@ from .nervous_sensor import NervousSensor
 
 
 class ConnectionManager(AsyncManager):
-    def __init__(self, sensor_names, gui=False, folder=False, lsl=False, parallel_connection_authorized=3):
+    def __init__(
+        self, sensor_names, gui=False, folder=False, lsl=False, parallel_connection_authorized=3
+    ):
         super().__init__()
         self._sensors = [
-            NervousSensor(name=name, start_time=int(time.time()), timeout=10, connection_manager=self)
+            NervousSensor(
+                name=name, start_time=int(time.time()), timeout=10, connection_manager=self
+            )
             for name in sensor_names
         ]
         self._semaphore = asyncio.Semaphore(parallel_connection_authorized)
         self._all_connected = asyncio.Event()
+        self._stop_event = asyncio.Event()
         self._async_managers = []
 
         if gui:

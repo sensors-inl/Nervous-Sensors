@@ -10,7 +10,25 @@ SENSORS_HELP = (
 GUI_HELP = "Show real-time data graph."
 FOLDER_HELP = "Save CSV data files in folder."
 LSL_HELP = "Send sensor data on LSL outlets."
-PARALLEL_HELP = "Number of parallel connection tentatives authorized."
+PARALLEL_HELP = "Number of parallel connection tentatives authorized. Default to 1."
+
+colors = [
+    "\033[34m",  # blue
+    "\033[35m",  # magenta
+    "\033[36m",  # cyan
+    "\033[33m",  # yellow
+    "\033[91m",  # light red
+    "\033[92m",  # light green
+    "\033[93m",  # light yellow
+    "\033[94m",  # light blue
+    "\033[95m",  # light magenta
+    "\033[96m",  # light cyan
+    "\033[38;5;208m",  # orange
+    "\033[38;5;214m",  # gold
+    "\033[38;5;172m",  # brown
+    "\033[38;5;105m",  # purple
+    "\033[38;5;130m",  # violet
+]
 
 
 def print_start_info(info):
@@ -30,20 +48,14 @@ def print_general_info(info):
 
 
 def get_color(i):
-    return [
-        "\033[34m",  # blue
-        "\033[35m",  # magenta
-        "\033[36m",  # cyan
-        "\033[33m",  # yellow
-        "\033[91m",  # light red
-        "\033[92m",  # light green
-        "\033[93m",  # light yellow
-        "\033[94m",  # light blue
-        "\033[95m",  # light magenta
-        "\033[96m",  # light cyan
-        "\033[38;5;208m",  # orange
-        "\033[38;5;214m",  # gold
-        "\033[38;5;172m",  # brown
-        "\033[38;5;105m",  # purple
-        "\033[38;5;130m",  # violet
-    ][i % 15]
+    return colors[i % 15]
+
+
+def extract_sensors(sensors):
+    """
+    :return: all ECG/EDAxxx for formats : ECG/EDAxxx, ECG/EDA_xxx and ECG/EDA-xxx
+    """
+    if "_" in sensors[0] or "-" in sensors[0]:
+        return [f"{s[:3]}{s[4:]}" for s in sensors if "ecg" in s.lower() or "eda" in s.lower()]
+    else:
+        return [s for s in sensors if "ecg" in s.lower() or "eda" in s.lower()]

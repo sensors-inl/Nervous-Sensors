@@ -19,7 +19,9 @@ class NervousSensor:
     def __init__(self, name, start_time, timeout, connection_manager):
         self._name = name
         self._start_time = start_time
-        self._start_time_str = f'{datetime.today().strftime("%Y_%m_%d")}_{datetime.now().strftime("%Hh%Mm")}'
+        self._start_time_str = (
+            f'{datetime.today().strftime("%Y_%m_%d")}_{datetime.now().strftime("%Hh%Mm")}'
+        )
         self._color = get_color(NervousSensor.n)
         self._timeout = timeout
         self._connection_manager = connection_manager
@@ -53,9 +55,15 @@ class NervousSensor:
         return f"[{self._color}{self._name[:3]} {self._name[3:]}{RESET}]"
 
     def get_ble_name(self) -> str:
+        """
+        :return: Official BLE name of the sensor.
+        """
         return f"RENFORCE {self._name[:3]} {self._name[3:]}"
 
     def get_battery_level(self) -> str | int:
+        """
+        :return: Battery int level or 'unknown' if it has not been updated yet.
+        """
         return self._battery_level
 
     # Bleak methods
@@ -89,7 +97,7 @@ class NervousSensor:
                 "6e400003-b5a3-f393-e0a9-e50e24dcca9e", self._data_manager.get_data_callback()
             )
             return True
-        except (BleakError, AttributeError):
+        except (BleakError, KeyError, AttributeError, ValueError):
             return False
 
     async def stop_notifications(self) -> bool:
@@ -100,12 +108,12 @@ class NervousSensor:
             await self._client.stop_notify("00002a19-0000-1000-8000-00805f9b34fb")
             await self._client.stop_notify("6e400003-b5a3-f393-e0a9-e50e24dcca9e")
             return True
-        except:
+        except (BleakError, KeyError, AttributeError, ValueError):
             return False
 
     async def connect(self):
         """
-        ! Blocking as long as connection is maintained (theoretically indefinitely)
+        [!] Blocking as long as connection is maintained (theoretically indefinitely)
         """
         scanner = BleakScanner()
         disconnection_event = asyncio.Event()
@@ -124,7 +132,6 @@ class NervousSensor:
                     await time_encode(),
                     response=False,
                 )
-
                 self._connection_manager.on_sensor_connect(self)
                 connection_was_established = True
                 await disconnection_event.wait()
@@ -132,7 +139,7 @@ class NervousSensor:
 
             self._client = None
 
-        except:
+        except (BleakError, KeyError, AttributeError, ValueError):
             if connection_was_established:
                 self._connection_manager.on_sensor_disconnect(self)
             else:

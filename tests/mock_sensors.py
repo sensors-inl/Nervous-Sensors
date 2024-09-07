@@ -5,6 +5,9 @@ from nervous_sensors.nervous_sensor import NervousSensor
 
 
 def get_correct_sensor(manager):
+    """
+    :return: A mock sensor that will connect and stay connected.
+    """
     mock_sensor = Mock(spec=NervousSensor)
 
     async def connect_side_effect():
@@ -18,6 +21,9 @@ def get_correct_sensor(manager):
 
 
 def get_failed_sensor(manager):
+    """
+    :return: A mock sensor that will fail to connect.
+    """
     mock_sensor = Mock(spec=NervousSensor)
 
     async def connect_side_effect():
@@ -29,6 +35,9 @@ def get_failed_sensor(manager):
 
 
 def get_sensor_with_disconnection(manager):
+    """
+    :return: A mock sensor that will connect and has disconnections occurring.
+    """
     mock_sensor = Mock(spec=NervousSensor)
 
     async def connect_side_effect():

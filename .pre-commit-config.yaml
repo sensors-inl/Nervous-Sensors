@@ -5,7 +5,6 @@ repos:
     -   id: check-added-large-files
         args: ['--maxkb=600']
     -   id: check-yaml
-    -   id: check-json
     -   id: check-toml
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
@@ -15,10 +14,3 @@ repos:
     rev: 1.8.3
     hooks:
     -   id: poetry-check
-
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.4.2
-  hooks:
-    - id: ruff
-      args: [ --fix ]
-    - id: ruff-format
