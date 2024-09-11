@@ -22,7 +22,6 @@ class ConnectionManager(AsyncManager):
         ]
         self._semaphore = asyncio.Semaphore(parallel_connection_authorized)
         self._all_connected = asyncio.Event()
-        self._stop_event = asyncio.Event()
         self._async_managers = []
 
         if gui:
