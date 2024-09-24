@@ -7,9 +7,7 @@ RESET = "\033[0m"
 SENSORS_HELP = (
     '"ECG XXXX","EDA XXXX",... : specify a list of'
     "sensors name to connect to. Replace XXXX with the"
-    "serial number. Other accepted format are ECGXXXX,"
-    "ECG_XXXX or ECG-XXXX (quotes are unnecessary for those"
-    "formats)."
+    "serial number."
 )
 GUI_HELP = (
     "Show real-time data graph in web browser."

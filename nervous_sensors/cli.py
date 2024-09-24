@@ -54,16 +54,7 @@ def cli(sensors, gui, folder, lsl, parallel):
 
 
 def extract_sensors(sensors):
-    """
-    :return: all ECG/EDAxxx for formats : ECG/EDAxxx, ECG/EDA_xxx and ECG/EDA-xxx
-    """
-    for i, sensor in enumerate(sensors):
-        sensor = sensor.replace(" ", "")
-        sensor = sensor.replace("_", "")
-        sensor = sensor.replace("-", "")
-        sensor = sensor[:3] + " " + sensor[3:]
-        sensors[i] = sensor.upper()
-    return [s for s in sensors if "ECG" in s or "EDA" in s]
+    return list(sensors)
 
 
 async def run_app(sensor_names, gui, folder, lsl, parallel_connection_authorized):
