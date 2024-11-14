@@ -5,7 +5,7 @@ from bleak import BleakClient, BleakScanner
 from bleak.exc import BleakError
 
 from .cli_utils import RESET, get_color
-from .codec import time_encode
+from .codec import Codec
 from .data_manager import DataManager
 
 # Sampling rates
@@ -25,7 +25,7 @@ class NervousSensor:
         self._connection_manager = connection_manager
         self._client = None
         self._battery_level = "unknown"
-        self._data_manager = DataManager.get_instance(self)
+        self._data_manager = DummyDataManager(sensor_name=name, sampling_rate=1, start_time=start_time, codec=Codec())
         NervousSensor.n += 1
 
     # Getters
@@ -121,7 +121,7 @@ class NervousSensor:
                 # Update embedded RTC
                 await self._client.write_gatt_char(
                     "6e400002-b5a3-f393-e0a9-e50e24dcca9e",
-                    await time_encode(),
+                    await Codec.time_encode(),
                     response=False,
                 )
 
@@ -132,8 +132,19 @@ class NervousSensor:
 
             self._client = None
 
-        except Exception:
+        except Exception as Argument:
+            print(str(Argument))
             if connection_was_established:
                 self._connection_manager.on_sensor_disconnect(self)
             else:
                 self._connection_manager.on_sensor_fail_to_connect(self)
+
+
+class DummyDataManager(DataManager):
+    def __init__(self, sensor_name, sampling_rate, start_time, codec):
+        # this one do nothing
+        pass
+
+    def _process_decoded_data(self, timestamp, data):
+        # this does not add any data
+        pass

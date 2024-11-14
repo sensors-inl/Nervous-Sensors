@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import bleak
 import pandas as pd
 
-from .codec import cobs_decode, protobuf_decode
+from .codec import Codec
 
 # Maximum sizes from which the data are truncated and rested
 # using hysteresis for CPU consumption avoidance
@@ -13,18 +13,18 @@ THRESH2 = 20000
 
 
 class DataManager(ABC):
-    def __init__(self, sensor_name, sampling_rate, header, start_time, protobuf_type):
+    def __init__(self, sensor_name, sampling_rate, header, start_time, codec: Codec):
         """
         @param header: header of the data
         @param start_time: start time of the data
         @param protobuf_type: type of the protobuf message
         """
+        self._codec = codec
         self._sensor_name = sensor_name
         self._sampling_rate = sampling_rate
         self.__header = header
         self.__data = []
         self.__start_time = start_time
-        self._protobuf_type = protobuf_type
         self.__lock = threading.Lock()
 
     def get_header(self):
@@ -98,57 +98,9 @@ class DataManager(ABC):
 
     def get_data_callback(self):
         async def data_callback(sender: bleak.BleakGATTCharacteristic, data: bytearray):
-            data = await cobs_decode(data)
-            data, timestamp = await protobuf_decode(self._protobuf_type, data)
+            data = await self._codec.cobs_decode(data)
+            data, timestamp = await self._codec.protobuf_decode(data)
             timestamp -= self.__start_time
             self._process_decoded_data(timestamp, data)
 
         return data_callback
-
-    @staticmethod
-    def get_instance(sensor):
-        name = sensor.get_name()
-        start_time = sensor.get_start_time()
-        sampling_rate = sensor.get_sampling_rate()
-        protobuf_type = "RENFORCE ECG" if "ECG" in name else "RENFORCE EDA"
-        if protobuf_type == "RENFORCE ECG":
-            return ECGDataManager(name, sampling_rate, start_time, protobuf_type)
-        else:
-            return EDADataManager(name, sampling_rate, start_time, protobuf_type)
-
-
-# ---------------------------
-# ECG and EDA data classes
-# ---------------------------
-
-
-class ECGDataManager(DataManager):
-    def __init__(self, sensor_name, sampling_rate, start_time, protobuf_type):
-        super().__init__(
-            sensor_name=sensor_name,
-            sampling_rate=sampling_rate,
-            header=["time_ecg (s)", "ecg (mV)"],
-            start_time=start_time,
-            protobuf_type=protobuf_type,
-        )
-
-    def _process_decoded_data(self, timestamp, data):
-        data_to_add = []
-        for i in range(len(data)):
-            data_to_add.append([timestamp + i * (1 / self._sampling_rate), data[i]])
-        self._add_data(data_to_add)
-
-
-class EDADataManager(DataManager):
-    def __init__(self, sensor_name, sampling_rate, start_time, protobuf_type):
-        super().__init__(
-            sensor_name=sensor_name,
-            sampling_rate=sampling_rate,
-            header=["time_eda (s)", "12Hz"],
-            start_time=start_time,
-            protobuf_type=protobuf_type,
-        )
-
-    def _process_decoded_data(self, timestamp, data):
-        data_to_add = [[timestamp, data]]
-        self._add_data(data_to_add)
