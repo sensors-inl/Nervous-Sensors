@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nervous-sensors"
-version = "0.1.1"
+version = "0.1.2"
 description = "Python backend for connection to ECG and EDA sensors from the Lyon Institute of Nanotechnology (INL)"
 authors = ["Tristan Habémont", "Hugo Buy", "Bertrand Massot <bertrand.massot@insa-lyon.fr>"]
 license = "MIT"
