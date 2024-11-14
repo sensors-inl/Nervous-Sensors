@@ -28,9 +28,7 @@ Usage: nervous [OPTIONS]
 Options:
   -s, --sensors TEXT      "ECG XXXX","EDA XXXX",... : specify a list of
                           sensors name to connect to. Replace XXXX with the
-                          serial number. Other accepted format are ECGXXXX,
-                          ECG_XXXX or ECG-XXXX (quotes are unnecessary for those
-                          formats).
+                          serial number.
   -g, --gui               Show real-time data graph in web browser.
                           Get the URL of the webserver in the output console
                           when the script is launched.
