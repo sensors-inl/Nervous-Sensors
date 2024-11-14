@@ -6,14 +6,27 @@ from .cli_utils import print_bold_section, print_general_info
 from .folder_manager import FolderManager
 from .gui_manager import GUIManager
 from .lsl_manager import LSLManager
+from .nervous_ecg import NervousECG
+from .nervous_eda import NervousEDA
 from .nervous_sensor import NervousSensor
 
 
 class ConnectionManager(AsyncManager):
     def __init__(self, sensor_names, gui=False, folder=False, lsl=False, parallel_connection_authorized=1):
         super().__init__()
-        self._sensors = [
-            NervousSensor(name=name, start_time=int(time.time()), timeout=10, connection_manager=self)
+        self._sensors = []
+        for name in sensor_names:
+            if "ECG" in name:
+                self._sensors.append(
+                    NervousECG(name=name, start_time=int(time.time()), timeout=10, connection_manager=self)
+                )
+            if "EDA" in name:
+                self._sensors.append(
+                    NervousEDA(name=name, start_time=int(time.time()), timeout=10, connection_manager=self)
+                )
+        [
+            # NervousSensor(name=name, start_time=int(time.time()), timeout=10, connection_manager=self)
+            NervousECG(name=name, start_time=int(time.time()), timeout=10, connection_manager=self)
             for name in sensor_names
         ]
         self._semaphore = asyncio.Semaphore(parallel_connection_authorized)
