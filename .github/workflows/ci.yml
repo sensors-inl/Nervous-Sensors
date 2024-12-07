@@ -36,7 +36,7 @@ jobs:
       - name: Download and Install liblsl
         run: |
           wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-jammy_amd64.deb
-          sudo apt install ./liblsl-1.16.2-jammy_amd64.deb  
+          sudo apt install ./liblsl-1.16.2-jammy_amd64.deb
 
       - name: 🐍 Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
