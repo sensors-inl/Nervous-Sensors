@@ -110,7 +110,7 @@ This project, along with the entire Nervous initiative, is licensed under the [M
 
 ## Acknowledgments
 
-The main contributors to this project are Bertrand Massot, Tristan Habemont and Hugo Buy from INSA Lyon, CNRS, INL UMR 5270, Villeurbanne, France.
+The main contributors to this project are Bertrand Massot, Tristan Habémont and Hugo Buy from INSA Lyon, CNRS, INL UMR 5270, Villeurbanne, France.
 
 This work was supported by the **French National Research Agency (ANR)** under grant **ANR-22-CE31-0023-03 RENFORCE**.
 
