@@ -28,9 +28,9 @@ aioconsole = ">=0.7.1"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.2.2"
 pytest-asyncio = "^0.23.8"
 pre-commit = "^3.7.1"
+ruff = "^0.4.2"
 
 [tool.setuptools.packages.find]
 exclude = ["tests"]
@@ -42,6 +42,7 @@ nervous = "nervous_sensors.cli:cli"
 line-length = 119
 target-version = "py312"
 lint.select = ["I", "E", "F", "C"]
+fix = true
 
 [tool.ruff.lint.per-file-ignores]
 "nervous_sensors/pb2.py" = ["F821", "E501"]

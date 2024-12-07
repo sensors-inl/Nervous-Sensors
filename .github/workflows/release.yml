@@ -14,28 +14,27 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: 🪶 Install poetry
+      - name: 🪶 Install Poetry
         uses: abatilo/actions-poetry@v2
 
-      - name: 🪶 Set up virtualenv
+      - name: 🪶 Setup Poetry venv in project
         run: |
-          poetry config virtualenvs.in-project true
-      - uses: actions/cache@v3
+          make setup
 
-        name: 🪶 Cache the virtualenv
+      - uses: actions/cache@v3
+        name: 🪶 Cache Poetry venv
         with:
           path: ./.venv
           key: venv-${{ hashFiles('poetry.lock') }}
 
-      - name: 📦 Install the project dependencies
+      - name: 📦 Install package dependencies
         run: |
-          poetry install --only main
+          make install-main
 
       - name: 🛠️ Build
         run: |
-          poetry build
+          make build
 
       - name: 🚀 Publish to PyPI
         run: |
-          poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
-          poetry publish
+          make publish
