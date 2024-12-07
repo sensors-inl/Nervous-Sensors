@@ -26,38 +26,44 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        python-version: [ "3.10", "3.11", "3.12" ]
+        python-version: [ "3.11", "3.12" ]
 
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
-    - name: 🐍 Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v4
 
-    - name: 🪶 Install Poetry
-      uses: abatilo/actions-poetry@v2
+      - name: Download and Install liblsl
+        run: |
+          wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-jammy_amd64.deb
+          sudo apt install ./liblsl-1.16.2-jammy_amd64.deb  
 
-    - name: 🪶 Set up Poetry venv in project
-      run: |
-        make setup
+      - name: 🐍 Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - uses: actions/cache@v3
-      name: 🪶 Cache Poetry venv
-      with:
-        path: ./.venv
-        key: venv-${{ hashFiles('poetry.lock') }}
+      - name: 🪶 Install Poetry
+        uses: abatilo/actions-poetry@v2
 
-    - name: 📦+🔧 Install package & dev dependencies
-      run: |
-        make install-dev
+      - name: 🪶 Set up Poetry venv in project
+        run: |
+          make setup
 
-    - name: 🧹 Lint with ruff & pre-commit
-      run: |
-        make lint
+      - uses: actions/cache@v3
+        name: 🪶 Cache Poetry venv
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
 
-    - name: 🧪 Test with pytest
-      run: |
-        make test
+      - name: 📦+🔧 Install package & dev dependencies
+        run: |
+          make install-dev
+
+      - name: 🧹 Lint with ruff & pre-commit
+        run: |
+          make lint
+
+      - name: 🧪 Test with pytest
+        run: |
+          make test
