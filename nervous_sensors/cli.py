@@ -46,9 +46,14 @@ def cli(sensors, gui, folder, lsl, parallel):
     manager = ConnectionManager(true_sensors, gui, folder, lsl, parallel)
 
     try:
-        asyncio.run(manager.start())
+        asyncio.run(run_app(manager))
     except (KeyboardInterrupt, OSError):
-        asyncio.run(manager.stop())
-    finally:
         print_stop_info("Shutting down Nervous framework")
         sys.exit(0)
+
+async def run_app(manager:ConnectionManager):
+    try:
+        async with asyncio.TaskGroup() as tg:
+            tg.create_task(manager.start())
+    except Exception:
+        await manager.stop()
