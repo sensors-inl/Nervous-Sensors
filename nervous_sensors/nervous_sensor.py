@@ -8,11 +8,6 @@ from .cli_utils import RESET, get_color
 from .codec import Codec
 from .data_manager import DataManager
 
-# Sampling rates
-ECG_SAMPLING_RATE = 512
-EDA_SAMPLING_RATE = 8
-
-
 class NervousSensor:
     n = 0
 
@@ -42,22 +37,22 @@ class NervousSensor:
         return self._start_time_str
 
     def get_type(self) -> str:
-        return "ECG" if "ecg" in self._name.lower() else "EDA"
+        return "GENERIC"
 
     def get_sampling_rate(self) -> int:
-        return ECG_SAMPLING_RATE if "ecg" in self._name.lower() else EDA_SAMPLING_RATE
+        return 0 # IRREGULAR_RATE in LSL for variable sampling rate
 
     def get_name(self) -> str:
         return self._name
 
     def get_colored_name(self) -> str:
-        return f"[{self._color}{self._name[:3]} {self._name[3:]}{RESET}]"
+        return f"[{self._color}{self._name}{RESET}]"
 
     def get_ble_name(self) -> str:
         """
         :return: Official BLE name of the sensor.
         """
-        return f"RENFORCE {self._name[:3]} {self._name[3:]}"
+        return f"{self._name}"
 
     def get_battery_level(self) -> str | int:
         """
