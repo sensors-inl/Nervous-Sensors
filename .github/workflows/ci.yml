@@ -31,39 +31,39 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Download and install liblsl
-      run: |
-        wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-jammy_amd64.deb
-        sudo apt install ./liblsl-1.16.2-jammy_amd64.deb
+      - name: Download and Install liblsl
+        run: |
+          wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-jammy_amd64.deb
+          sudo apt install ./liblsl-1.16.2-jammy_amd64.deb
 
-    - name: 🐍 Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: 🐍 Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: 🪶 Install poetry
-      uses: abatilo/actions-poetry@v2
+      - name: 🪶 Install Poetry
+        uses: abatilo/actions-poetry@v2
 
-    - name: 🪶 Set up virtualenv
-      run: |
-        poetry config virtualenvs.in-project true
+      - name: 🪶 Set up Poetry venv in project
+        run: |
+          make setup
 
-    - uses: actions/cache@v3
-      name: 🪶 Cache the virtualenv
-      with:
-        path: ./.venv
-        key: venv-${{ hashFiles('poetry.lock') }}
+      - uses: actions/cache@v3
+        name: 🪶 Cache Poetry venv
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
 
-    - name: 📦+🔧 Install the dependencies with dev
-      run: |
-        poetry install --with dev
+      - name: 📦+🔧 Install package & dev dependencies
+        run: |
+          make install-dev
 
-    - name: 🧹 Lint with pre-commit
-      run: |
-        poetry run pre-commit run --all-files
+      - name: 🧹 Lint with ruff & pre-commit
+        run: |
+          make lint
 
-    - name: 🧪 Test with pytest
-      run: |
-        poetry run pytest
+      - name: 🧪 Test with pytest
+        run: |
+          make test

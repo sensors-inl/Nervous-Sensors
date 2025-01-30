@@ -1,13 +1,11 @@
 import asyncio
-import os
 import sys
-from asyncio import TaskGroup
 
 import click
 
 from . import cli_utils
 from .cli_listener import CLIListener
-from .cli_utils import print_bold_section, print_general_info, print_stop_info
+from .cli_utils import extract_sensors, print_bold_section, print_general_info, print_stop_info
 from .connection_manager import ConnectionManager
 
 
@@ -28,10 +26,9 @@ def cli(sensors, gui, folder, lsl, parallel):
         true_sensors = extract_sensors(sensors)
 
         if not true_sensors:
-            print_stop_info('No sensors follows -s/--sensors option, please use "ECG XXXX","EDA XXXX" format')
+            print_stop_info("No sensors follows -s/--sensors option, use synthax ECGxxx,EDAxxx...")
             sys.exit(0)
         else:
-            print_general_info("Press 'enter' to stop the program properly")
             print_general_info(f"- Sensors used: {true_sensors}")
     else:
         print_stop_info("Option -s/--sensors is required.")
@@ -43,30 +40,20 @@ def cli(sensors, gui, folder, lsl, parallel):
         print_general_info(f"- Folder saving enabled in: '{folder}'")
     if lsl:
         print_general_info("- LSL enabled")
-    # if parallel:
-    #    print_general_info(f"- Parallel connection authorized: {parallel}")
+    if parallel:
+        print_general_info(f"- Parallel connection authorized: {parallel}")
+
+    manager = ConnectionManager(true_sensors, gui, folder, lsl, parallel)
 
     try:
-        asyncio.run(run_app(true_sensors, gui, folder, lsl, parallel))
-    except KeyboardInterrupt:
+        asyncio.run(run_app(manager))
+    except (KeyboardInterrupt, OSError):
         print_stop_info("Shutting down Nervous framework")
-        os._exit(0)
+        sys.exit(0)
 
-
-def extract_sensors(sensors):
-    return list(sensors)
-
-
-async def run_app(sensor_names, gui, folder, lsl, parallel_connection_authorized):
-    manager = ConnectionManager(sensor_names, gui, folder, lsl, parallel_connection_authorized)
-
-    # async def listen_enter():
-    #    await aioconsole.ainput()
-    #    raise KeyboardInterrupt
-
+async def run_app(manager:ConnectionManager):
     try:
-        async with TaskGroup() as tg:
-            # tg.create_task(listen_enter()) # TODO remove or not ?
+        async with asyncio.TaskGroup() as tg:
             tg.create_task(manager.start())
     except Exception:
         await manager.stop()
