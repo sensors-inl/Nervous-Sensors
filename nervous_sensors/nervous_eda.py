@@ -7,6 +7,7 @@ from .nervous_sensor import NervousSensor
 
 EDA_SAMPLING_RATE = 8
 
+
 class NervousEDA(NervousSensor):
     def __init__(self, name, start_time, timeout, connection_manager):
         super().__init__(name=name, start_time=start_time, timeout=timeout, connection_manager=connection_manager)

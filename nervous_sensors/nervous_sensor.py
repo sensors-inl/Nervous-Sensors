@@ -8,6 +8,7 @@ from .cli_utils import RESET, get_color
 from .codec import Codec
 from .data_manager import DataManager
 
+
 class NervousSensor:
     n = 0
 
@@ -22,7 +23,6 @@ class NervousSensor:
         self._battery_level = "unknown"
         self._data_manager = DummyDataManager(sensor_name=name, sampling_rate=1, start_time=start_time, codec=Codec())
         NervousSensor.n += 1
-
 
     # Getters
 
@@ -40,7 +40,7 @@ class NervousSensor:
         return "GENERIC"
 
     def get_sampling_rate(self) -> int:
-        return 0 # IRREGULAR_RATE in LSL for variable sampling rate
+        return 0  # IRREGULAR_RATE in LSL for variable sampling rate
 
     def get_name(self) -> str:
         return self._name

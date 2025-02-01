@@ -1,10 +1,10 @@
-from .data_manager import DataManager
-from .nervous_sensor import NervousSensor
-from .nervous_ecg import NervousECG
 import asyncio
 
+from .nervous_sensor import NervousSensor
+
+
 class NervousVirtual(NervousSensor):
-    def __init__(self, type, name, sensor:NervousSensor, start_time, update_time, timeout, connection_manager):
+    def __init__(self, type, name, sensor: NervousSensor, start_time, update_time, timeout, connection_manager):
         super().__init__(name=name, start_time=start_time, timeout=timeout, connection_manager=connection_manager)
         self._type = type
         self._sensor = sensor
@@ -13,15 +13,15 @@ class NervousVirtual(NervousSensor):
         self._stop_event = asyncio.Event()
         self._disconnect_event = asyncio.Event()
         self._update_time = update_time
-    
+
     # override Nervous Sensor class properties
 
     def get_type(self) -> str:
         return self._type
 
     def get_sampling_rate(self) -> int:
-        return 0 # IRREGULAR_RATE in LSL for variable sampling rate
-    
+        return 0  # IRREGULAR_RATE in LSL for variable sampling rate
+
     # override Bleak helpers as Bluetooth is not used in virtual sensors
 
     def is_connected(self) -> bool:
@@ -56,7 +56,7 @@ class NervousVirtual(NervousSensor):
     async def stop_notifications(self) -> bool:
         self._stop_event.set()
         return True
-    
+
     # This must be overriden by the virtual sensor instance
     def _process_data(self):
         print("_process_data() method not implemented")

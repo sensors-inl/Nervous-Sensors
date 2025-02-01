@@ -7,12 +7,13 @@ from .nervous_sensor import NervousSensor
 
 ECG_SAMPLING_RATE = 512
 
+
 class NervousECG(NervousSensor):
     def __init__(self, name, start_time, timeout, connection_manager):
         super().__init__(name=name, start_time=start_time, timeout=timeout, connection_manager=connection_manager)
         # override
         self._data_manager = ECGDataManager(sensor_name=name, sampling_rate=ECG_SAMPLING_RATE, start_time=start_time)
-    
+
     # override Nervous Sensor class properties
 
     def get_type(self) -> str:
