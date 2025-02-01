@@ -5,12 +5,22 @@ from .codec import Codec
 from .data_manager import DataManager
 from .nervous_sensor import NervousSensor
 
+EDA_SAMPLING_RATE = 8
+
 
 class NervousEDA(NervousSensor):
     def __init__(self, name, start_time, timeout, connection_manager):
         super().__init__(name=name, start_time=start_time, timeout=timeout, connection_manager=connection_manager)
         # override
-        self._data_manager = EDADataManager(sensor_name=name, sampling_rate=8, start_time=start_time)
+        self._data_manager = EDADataManager(sensor_name=name, sampling_rate=EDA_SAMPLING_RATE, start_time=start_time)
+
+    # override Nervous Sensor class properties
+
+    def get_type(self) -> str:
+        return "EDA"
+
+    def get_sampling_rate(self) -> int:
+        return EDA_SAMPLING_RATE
 
 
 class EDADataManager(DataManager):
