@@ -23,6 +23,7 @@ dash = ">=2.16.1"
 dash_bootstrap_components = ">=1.6.0"
 click = ">=8.1.7"
 aioconsole = ">=0.7.1"
+scipy = ">=1.15.1"
 
 [tool.poetry.group.dev]
 optional = true

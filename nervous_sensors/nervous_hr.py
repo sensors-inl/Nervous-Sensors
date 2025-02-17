@@ -1,8 +1,9 @@
 from .data_manager import DataManager
 from .nervous_ecg import NervousECG
 from .nervous_virtual import NervousVirtual
+from . import rt_ecg_analysis
 
-HR_UPDATE_INTERVAL = 2  # seconds
+HR_UPDATE_INTERVAL = 1  # seconds
 
 
 class HRDataManager(DataManager):
@@ -23,7 +24,7 @@ class HRDataManager(DataManager):
                 data_to_add.append([timestamp[i], data[i]])
             self._add_data(data_to_add)
         except Exception as Argument:
-            print("HR", str(Argument))
+            print("HR ERROR: ", str(Argument))
 
 
 class NervousHR(NervousVirtual):
@@ -41,16 +42,28 @@ class NervousHR(NervousVirtual):
         # This overrides the empty DataManager of NervousSensor
         self._data_manager = HRDataManager(sensor_name=name, sampling_rate=0, start_time=start_time)
         self._latest_data = 0
+        self._unit = "BPM"
+
+    # override enabling notifications to reinit HR detection
+    async def start_notifications(self) -> bool:
+        rt_ecg_analysis.init()
+        return await super().start_notifications()
 
     # This overrides the empty method of NervousVirtual and is called every HR_UPDATE_INTERVAL
     def _process_data(self):
         # Check for new samples since last processed
         data = self._sensor.data_manager.get_latest_data(latest_data=self._latest_data)
-        # !!! MATTHIEU : PROCESS THE SAMPLES HERE !!!
+        # Process the new samples
         print(f"HR got {len(data.index)} samples")
         if len(data.index) == 0:
             return
-        # Add data to the data manager, with a list of timestamps and a list of HR values
-        self._data_manager._process_decoded_data([data.iloc[-1, 0]], [1])
+        try:
+            r_peak, heart_rate, timestamp_heart_rate = rt_ecg_analysis.updateHR(data["ECG (A.U.)"].tolist(), data["Time (s)"].tolist())
+            print(r_peak, heart_rate, timestamp_heart_rate)
+            # Add data to the data manager, with a list of timestamps and a list of HR values
+            if heart_rate is not None:
+                self._data_manager._process_decoded_data(timestamp=timestamp_heart_rate, data=heart_rate)
+        except Exception as Argument:
+            print("HR ERROR: ", str(Argument))
         # Update last processed, this should be updated by MATTHIEU using the last sample in the shifting window
         self._latest_data = data.iloc[-1, 0]
