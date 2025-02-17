@@ -13,6 +13,7 @@ class NervousEDA(NervousSensor):
         super().__init__(name=name, start_time=start_time, timeout=timeout, connection_manager=connection_manager)
         # override
         self._data_manager = EDADataManager(sensor_name=name, sampling_rate=EDA_SAMPLING_RATE, start_time=start_time)
+        self._unit = "uS"
 
     # override Nervous Sensor class properties
 
@@ -28,7 +29,7 @@ class EDADataManager(DataManager):
         super().__init__(
             sensor_name=sensor_name,
             sampling_rate=sampling_rate,
-            header=["time_ecg (s)", "eda (uS)"],
+            header=["Time (s)", "EDA (uS)"],
             start_time=start_time,
             codec=EDACodec(),
         )

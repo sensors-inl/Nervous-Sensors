@@ -14,6 +14,7 @@ class NervousSensor:
 
     def __init__(self, name, start_time, timeout, connection_manager):
         self._name = name
+        self._unit = "A.U."
         self._start_time = start_time
         self._start_time_str = f'{datetime.today().strftime("%Y_%m_%d")}_{datetime.now().strftime("%Hh%Mm")}'
         self._color = get_color(NervousSensor.n)
@@ -44,6 +45,9 @@ class NervousSensor:
 
     def get_name(self) -> str:
         return self._name
+    
+    def get_unit(self) -> str:
+        return self._unit
 
     def get_colored_name(self) -> str:
         return f"[{self._color}{self._name}{RESET}]"

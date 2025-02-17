@@ -34,7 +34,7 @@ class FolderManager(AsyncManager):
 
     def get_path(self, sensor):
         name = sensor.get_name()
-        return f"{self._folder_path}/{sensor.get_start_time_str()}_{name[:3]}_{name[3:]}.csv"
+        return f"{self._folder_path}/{sensor.get_start_time_str()}_{name}.csv"
 
     async def start(self):
         print_start_info("Starting Folder manager")

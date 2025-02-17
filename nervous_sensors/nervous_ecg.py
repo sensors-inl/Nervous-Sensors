@@ -28,7 +28,7 @@ class ECGDataManager(DataManager):
         super().__init__(
             sensor_name=sensor_name,
             sampling_rate=sampling_rate,
-            header=["time_ecg (s)", "ecg (mV)"],
+            header=["Time (s)", "ECG (A.U.)"],
             start_time=start_time,
             codec=ECGCodec(),
         )
