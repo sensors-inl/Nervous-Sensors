@@ -1,7 +1,7 @@
 from .data_manager import DataManager
 from .nervous_ecg import NervousECG
 from .nervous_virtual import NervousVirtual
-from . import rt_ecg_analysis
+from .ecg_analyzer import ECGAnalyzer
 
 HR_UPDATE_INTERVAL = 1  # seconds
 
@@ -43,10 +43,11 @@ class NervousHR(NervousVirtual):
         self._data_manager = HRDataManager(sensor_name=name, sampling_rate=0, start_time=start_time)
         self._latest_data = 0
         self._unit = "BPM"
+        self._analyzer = ECGAnalyzer(ecg_sensor.get_sampling_rate(), 10, 10)
 
     # override enabling notifications to reinit HR detection
     async def start_notifications(self) -> bool:
-        rt_ecg_analysis.init()
+        self._analyzer._reinit_history()
         return await super().start_notifications()
 
     # This overrides the empty method of NervousVirtual and is called every HR_UPDATE_INTERVAL
@@ -58,12 +59,13 @@ class NervousHR(NervousVirtual):
         if len(data.index) == 0:
             return
         try:
-            r_peak, heart_rate, timestamp_heart_rate = rt_ecg_analysis.updateHR(data["ECG (A.U.)"].tolist(), data["Time (s)"].tolist())
-            print(r_peak, heart_rate, timestamp_heart_rate)
+            heart_rate, heart_rate_times = self._analyzer.update_hr(
+                data["ECG (A.U.)"].tolist(), data["Time (s)"].tolist()
+            )
             # Add data to the data manager, with a list of timestamps and a list of HR values
             if heart_rate is not None:
-                self._data_manager._process_decoded_data(timestamp=timestamp_heart_rate, data=heart_rate)
+                self._data_manager._process_decoded_data(timestamp=heart_rate_times, data=heart_rate)
         except Exception as Argument:
             print("HR ERROR: ", str(Argument))
-        # Update last processed, this should be updated by MATTHIEU using the last sample in the shifting window
+        # Every samples are processed by the analyzer so we save the latest sample timestamp
         self._latest_data = data.iloc[-1, 0]

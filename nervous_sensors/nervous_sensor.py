@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 from datetime import datetime
 
 from bleak import BleakClient, BleakScanner
@@ -45,7 +46,7 @@ class NervousSensor:
 
     def get_name(self) -> str:
         return self._name
-    
+
     def get_unit(self) -> str:
         return self._unit
 
@@ -137,7 +138,9 @@ class NervousSensor:
 
             self._client = None
 
-        except (BleakError, KeyError, AttributeError, ValueError):
+        except Exception as Argument:
+            print(self.get_colored_name(), "Error:", str(Argument))
+            traceback.print_exc()
             if connection_was_established:
                 self._connection_manager.on_sensor_disconnect(self)
             else:
