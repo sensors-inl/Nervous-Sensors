@@ -9,17 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: 🐍 Set up Python 3.12
+      - name: 🐍 Set up Python 3.13
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: 🪶 Install Poetry
-        uses: abatilo/actions-poetry@v2
-
-      - name: 🪶 Setup Poetry venv in project
-        run: |
-          make setup
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
 
       - uses: actions/cache@v3
         name: 🪶 Cache Poetry venv
@@ -36,5 +36,7 @@ jobs:
           make build
 
       - name: 🚀 Publish to PyPI
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
         run: |
           make publish

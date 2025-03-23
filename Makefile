@@ -25,5 +25,4 @@ build:
 
 .PHONY: publish
 publish:
-	poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
-	poetry publish
+	poetry publish -u __token__ -p "$$PYPI_TOKEN"
