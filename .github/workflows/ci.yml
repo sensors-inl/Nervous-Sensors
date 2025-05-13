@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        python-version: [ "3.11", "3.12" ]
+        python-version: [ "3.11", "3.12", "3.13" ]
 
     runs-on: ${{ matrix.os }}
 
@@ -44,11 +44,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: 🪶 Install Poetry
-        uses: abatilo/actions-poetry@v2
-
-      - name: 🪶 Set up Poetry venv in project
-        run: |
-          make setup
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
 
       - uses: actions/cache@v3
         name: 🪶 Cache Poetry venv

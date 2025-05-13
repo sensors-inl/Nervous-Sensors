@@ -9,7 +9,7 @@ message Timestamp {
 /*** ECG Sensor ***/
 message EcgBuffer {
     bytes     data  = 1;
-    int32     lodpn = 2;
+    int32     lodpn = 2; // 0: both on, 1: left, 2: right, 3: both off
     Timestamp timestamp = 3;
 };
 

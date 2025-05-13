@@ -1,28 +1,38 @@
-[tool.poetry]
+[project]
 name = "nervous-sensors"
 version = "0.1.3"
 description = "Python backend for connection to ECG and EDA sensors from the Lyon Institute of Nanotechnology (INL)"
-authors = ["Tristan Habémont", "Hugo Buy", "Bertrand Massot <bertrand.massot@insa-lyon.fr>"]
+authors = [
+    {name = "Bertrand Massot", email = "bertrand.massot@insa-lyon.fr"},
+    {name = "Tristan Habemont"},
+    {name = "Hugo Buy"}
+]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/sensors-inl/Nervous-Sensors"
 packages = [
     { include = "nervous_sensors" }
 ]
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "bleak>=0.22.2",
+    "cobs>=1.2.0",
+    "numpy>=1.26.4",
+    "protobuf>=4.23.4",
+    "pylsl>=1.16.2",
+    "pandas>=2.2.1",
+    "plotly>=5.22.0",
+    "dash>=2.16.1",
+    "dash_bootstrap_components>=1.6.0",
+    "click>=8.1.7",
+    "aioconsole>=0.7.1",
+    "nervous-analytics>=0.3.3"
+]
 
-[tool.poetry.dependencies]
-python = ">=3.11,<3.13"
-bleak = ">=0.22.2"
-cobs = ">=1.2.0"
-numpy = ">=1.26.4"
-protobuf = ">=4.23.4"
-pylsl = ">=1.16.2"
-pandas = ">=2.2.1"
-plotly = ">=5.22.0"
-dash = ">=2.16.1"
-dash_bootstrap_components = ">=1.6.0"
-click = ">=8.1.7"
-aioconsole = ">=0.7.1"
+[project.urls]
+repository = "https://github.com/sensors-inl/Nervous-Sensors"
+
+[project.scripts]
+nervous = "nervous_sensors.cli:cli"
 
 [tool.poetry.group.dev]
 optional = true
@@ -34,9 +44,6 @@ ruff = "^0.4.2"
 
 [tool.setuptools.packages.find]
 exclude = ["tests"]
-
-[tool.poetry.scripts]
-nervous = "nervous_sensors.cli:cli"
 
 [tool.ruff]
 line-length = 119

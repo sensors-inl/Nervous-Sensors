@@ -25,8 +25,13 @@ class LSLManager(AsyncManager):
             sensor = sensor_lsl["sensor"]
             name = sensor.get_name()
             type = sensor.get_type()
+            labels = sensor.get_labels()
+            units = sensor.get_units()
             sampling_rate = sensor.get_sampling_rate()
-            stream_info = StreamInfo(name, type, 1, sampling_rate, "float32", name)
+            channel_count = sensor.get_channel_count()
+            stream_info = StreamInfo(name, type, channel_count, sampling_rate, "float32", name)
+            stream_info.set_channel_labels(labels)
+            stream_info.set_channel_units(units)
             sensor_lsl["outlet"] = StreamOutlet(stream_info)
 
     async def start(self):
@@ -51,16 +56,19 @@ class LSLManager(AsyncManager):
         sensor = sensor_lsl["sensor"]
         outlet = sensor_lsl["outlet"]
         time = sensor_lsl["time"]
+
         data = sensor.data_manager.get_latest_data(latest_data=time)
+        if len(data) == 0:
+            return
         try:
             sensor_lsl["time"] = data.iloc[-1, 0]
             data.iloc[:, 0] = data.iloc[:, 0] + LSLManager._start_time_lsl
             timestamp_list = data.iloc[:, 0].tolist()
-            data_list = data.iloc[:, 1].tolist()
+            data_list = data.iloc[:, 1:].values.tolist()
             outlet.push_chunk(
                 x=data_list,
                 timestamp=timestamp_list,
                 pushthrough=True,
             )
-        except IndexError:
-            pass  # No data to send
+        except Exception as e:
+            print(sensor.get_name(), "LSL send", str(e))
