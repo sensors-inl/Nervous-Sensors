@@ -43,8 +43,10 @@ class NervousHR(NervousVirtual):
         # This overrides the empty DataManager of NervousSensor
         self._data_manager = HRDataManager(sensor_name=name, sampling_rate=0, start_time=start_time)
         self._latest_data = 0
-        self._unit = "BPM"
+        self._labels = ["HR"]
+        self._units = ["BPM"]
         self._analyzer = ECGAnalyzer(fs=ecg_sensor.get_sampling_rate(), window_duration=5, history_size=5)
+        self._plot_type = "bar"
 
     # override enabling notifications to reinit HR detection
     async def start_notifications(self) -> bool:
@@ -55,19 +57,22 @@ class NervousHR(NervousVirtual):
     def _process_data(self):
         # Check for new samples since last processed
         data = self._sensor.data_manager.get_latest_data(latest_data=self._latest_data)
-        # Process the new samples
         if len(data.index) == 0:
             return
+        # Every samples are processed by the analyzer so we save the latest sample timestamp
+        self._latest_data = data.iloc[-1, 0]
+        # Check if electrodes are connected
+        electrode_status = self._sensor.get_electrode_status()
+        if electrode_status != "both on":
+            print("HR electrode detection:", electrode_status)
+            return
+        # Process samples
         try:
             heart_rate, heart_rate_timestamp, _ = self._analyzer.update_hr(
                 data["ECG (A.U.)"].tolist(), data["Time (s)"].tolist()
             )
-            # Debug heart rate values
-            print(heart_rate)
             # Add data to the data manager, with a list of timestamps and a list of HR values
             if heart_rate is not None:
                 self._data_manager._process_decoded_data(timestamp=heart_rate_timestamp, data=heart_rate)
         except Exception as Argument:
             print("HR ERROR: ", str(Argument))
-        # Every samples are processed by the analyzer so we save the latest sample timestamp
-        self._latest_data = data.iloc[-1, 0]

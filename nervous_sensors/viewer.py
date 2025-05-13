@@ -5,6 +5,7 @@ from threading import Event, Thread
 
 import dash
 import dash_bootstrap_components as dbc
+import numpy as np
 import plotly.graph_objects as go
 import requests
 from dash import Input, Output, dcc, html
@@ -77,9 +78,7 @@ class RenforceViewer:
         self.server_thread.start()
 
         # Start the Dash app in a separate thread
-        self.dash_thread = Thread(
-            target=app.run_server, kwargs={"debug": False, "use_reloader": False, "port": self.port}
-        )
+        self.dash_thread = Thread(target=app.run, kwargs={"debug": False, "use_reloader": False, "port": self.port})
         self.dash_thread.start()
 
         # Monitor the stop event
@@ -102,37 +101,49 @@ def update_data(n):
     fig = make_subplots(rows=len(sensors), cols=1, vertical_spacing=0.1)
 
     for i, sensor in enumerate(sensors):
-        data = sensor.data_manager.get_latest_data(last_n=1)
-
         try:
-            sample_rate = sensor.get_sampling_rate()
-            n_points = window_sec_size * sample_rate
-            data = sensor.data_manager.get_latest_data(last_n=n_points)
-            time = data.iloc[:, 0].tolist()
-            data_value = data.iloc[:, 1].tolist()
-            data_size = len(data_value)
-
-            if data_size < n_points:
-                data_value = [None] + data_value
-                time = [time[0] - (time[1] - time[0]) * (n_points - data_size)] + time
-
             name = sensor.get_name()
-            unit = sensor.get_unit()
-            name = f"{name}"
-            suffix = f" ({unit})"
+            sensor_name = f"{name}"
+            plot_type = sensor.get_plot_type()
+            # Get signal names
+            header = sensor._data_manager.get_header()
+            header = header[1:]
 
-            fig.add_trace(
-                go.Scatter(
-                    x=time,
-                    y=data_value,
-                    mode="lines",
-                    name=name + suffix,
-                ),
-                row=i + 1,
-                col=1,
-            )
-        except IndexError:
-            return message_children
+            time = []
+            data_value = np.empty((2, len(header)))
+            data = sensor.data_manager.get_latest_data(last_n=1)
+            if len(data) > 0:
+                last_timestamp = data.iloc[-1, 0]
+                data = sensor.data_manager.get_latest_data(latest_data=max(0, last_timestamp - window_sec_size))
+                time = data.iloc[:, 0].tolist()
+                data_value = data.iloc[:, 1:].to_numpy()
+
+            for j, signal in enumerate(header):
+                signal_name = f" {signal}"
+                if plot_type == "bar":
+                    fig.add_trace(
+                        go.Bar(
+                            x=time,
+                            y=data_value[:, j],
+                            name=sensor_name + signal_name,
+                        ),
+                        row=i + 1,
+                        col=1,
+                    )
+                else:
+                    fig.add_trace(
+                        go.Scatter(
+                            x=time,
+                            y=data_value[:, j],
+                            mode="lines",
+                            name=sensor_name + signal_name,
+                        ),
+                        row=i + 1,
+                        col=1,
+                    )
+        except Exception as e:
+            print("Viewer error:", str(e))
+            return
 
     fig.update_layout(
         template="plotly_white",

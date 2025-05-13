@@ -36,7 +36,6 @@ class DataManager(ABC):
         """
         with self.__lock:
             self.__data.extend(data)
-
             if len(self.__data) >= THRESH2:
                 self.__data = self.__data[-THRESH1:]
 
@@ -61,6 +60,7 @@ class DataManager(ABC):
         @param concerned_columns: columns of the header to get, None to get all columns.
         Can be a list of names or a list of index
         """
+
         if concerned_columns is None:
             concerned_columns = self.__header
 
@@ -68,25 +68,28 @@ class DataManager(ABC):
             concerned_columns = [self.__header[c] for c in concerned_columns]
 
         with self.__lock:
-            data = pd.DataFrame(self.__data, columns=self.__header)
-            data = data[concerned_columns]
+            try:
+                data = pd.DataFrame(self.__data, columns=self.__header)
+                data = data[concerned_columns]
 
-            if last_n is not None and latest_data is None:
-                if last_n == -1 or last_n >= data.shape[0]:
-                    return data
+                if last_n is not None and latest_data is None:
+                    if last_n == -1 or last_n >= data.shape[0]:
+                        return data
+                    else:
+                        return data[-last_n:]
+
+                elif latest_data is not None and last_n is None:
+                    if isinstance(latest_data_column, int):
+                        latest_data_column = self.__header[latest_data_column]
+
+                    if latest_data_column in data.columns:
+                        data = data[data[latest_data_column] > latest_data]
+                        return data
+
                 else:
-                    return data[-last_n:]
-
-            elif latest_data is not None and last_n is None:
-                if isinstance(latest_data_column, int):
-                    latest_data_column = self.__header[latest_data_column]
-
-                if latest_data_column in data.columns:
-                    data = data[data[latest_data_column] > latest_data]
-                    return data
-
-            else:
-                raise ValueError("Only one of last_n or latest_data can be defined")
+                    raise ValueError("Only one of last_n or latest_data can be defined")
+            except Exception as e:
+                print(self._sensor_name, "DataManager:", str(e))
 
     @abstractmethod
     def _process_decoded_data(self, timestamp, data):

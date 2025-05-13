@@ -15,7 +15,9 @@ class NervousSensor:
 
     def __init__(self, name, start_time, timeout, connection_manager):
         self._name = name
-        self._unit = "A.U."
+        self._channel_count = 1
+        self._units = ["a.u."]
+        self._labels = ["signal"]
         self._start_time = start_time
         self._start_time_str = f'{datetime.today().strftime("%Y_%m_%d")}_{datetime.now().strftime("%Hh%Mm")}'
         self._color = get_color(NervousSensor.n)
@@ -24,6 +26,7 @@ class NervousSensor:
         self._client = None
         self._battery_level = "unknown"
         self._data_manager = DummyDataManager(sensor_name=name, sampling_rate=1, start_time=start_time, codec=Codec())
+        self._plot_type = "scatter"
         NervousSensor.n += 1
 
     # Getters
@@ -39,7 +42,7 @@ class NervousSensor:
         return self._start_time_str
 
     def get_type(self) -> str:
-        return "GENERIC"
+        return self._type
 
     def get_sampling_rate(self) -> int:
         return 0  # IRREGULAR_RATE in LSL for variable sampling rate
@@ -47,8 +50,17 @@ class NervousSensor:
     def get_name(self) -> str:
         return self._name
 
-    def get_unit(self) -> str:
-        return self._unit
+    def get_units(self):
+        return self._units
+
+    def get_labels(self):
+        return self._labels
+
+    def get_channel_count(self) -> int:
+        return self._channel_count
+
+    def get_plot_type(self) -> str:
+        return self._plot_type
 
     def get_colored_name(self) -> str:
         return f"[{self._color}{self._name}{RESET}]"

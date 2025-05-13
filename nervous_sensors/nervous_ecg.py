@@ -13,6 +13,11 @@ class NervousECG(NervousSensor):
         super().__init__(name=name, start_time=start_time, timeout=timeout, connection_manager=connection_manager)
         # override
         self._data_manager = ECGDataManager(sensor_name=name, sampling_rate=ECG_SAMPLING_RATE, start_time=start_time)
+        self._labels = ["ECG"]
+        self._units = ["a.u."]
+
+    def get_electrode_status(self) -> str:
+        return self._data_manager._codec.get_lod()
 
     # override Nervous Sensor class properties
 
@@ -42,11 +47,22 @@ class ECGDataManager(DataManager):
 
 
 class ECGCodec(Codec):
+    def __init__(self):
+        self._lodpn = "both off"
+
     # override
     async def protobuf_decode(self, data):
         # parse the serialized message from a byte string
         pb_buffer_msg = pb2.EcgBuffer()
         pb_buffer_msg.ParseFromString(data)
+        if pb_buffer_msg.lodpn == 0:
+            self._lodpn = "both on"
+        if pb_buffer_msg.lodpn == 1:
+            self._lodpn = "left off"
+        if pb_buffer_msg.lodpn == 2:
+            self._lodpn = "right off"
+        if pb_buffer_msg.lodpn == 3:
+            self._lodpn = "both off"
         # return self._reshape_data(type, pb_buffer_msg.data, pb_buffer_msg.timestamp)
         # def _reshape_data(self, type, buffer_msg_data, buffer_msg_timestamp):
         timestamp = pb_buffer_msg.timestamp.time + pb_buffer_msg.timestamp.us * 0.000001
@@ -58,3 +74,7 @@ class ECGCodec(Codec):
         #    buffer_data = np.sqrt(np.square(real) + np.square(imag))  # get impedance amgnitude of lowest frequency
         #    buffer_data = 1000000 * 1 / buffer_data
         return buffer_data, timestamp
+
+    # specific to ECG
+    def get_lod(self):
+        return self._lodpn

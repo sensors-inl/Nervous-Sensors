@@ -13,12 +13,13 @@ class NervousEDA(NervousSensor):
         super().__init__(name=name, start_time=start_time, timeout=timeout, connection_manager=connection_manager)
         # override
         self._data_manager = EDADataManager(sensor_name=name, sampling_rate=EDA_SAMPLING_RATE, start_time=start_time)
-        self._unit = "uS"
+        self._labels = ["GSR"]
+        self._units = ["uS"]
 
     # override Nervous Sensor class properties
 
     def get_type(self) -> str:
-        return "EDA"
+        return "GSR"
 
     def get_sampling_rate(self) -> int:
         return EDA_SAMPLING_RATE
