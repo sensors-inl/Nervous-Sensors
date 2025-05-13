@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 from datetime import datetime
 
 from bleak import BleakClient, BleakScanner
@@ -14,6 +15,7 @@ class NervousSensor:
 
     def __init__(self, name, start_time, timeout, connection_manager):
         self._name = name
+        self._unit = "A.U."
         self._start_time = start_time
         self._start_time_str = f'{datetime.today().strftime("%Y_%m_%d")}_{datetime.now().strftime("%Hh%Mm")}'
         self._color = get_color(NervousSensor.n)
@@ -44,6 +46,9 @@ class NervousSensor:
 
     def get_name(self) -> str:
         return self._name
+
+    def get_unit(self) -> str:
+        return self._unit
 
     def get_colored_name(self) -> str:
         return f"[{self._color}{self._name}{RESET}]"
@@ -133,7 +138,9 @@ class NervousSensor:
 
             self._client = None
 
-        except (BleakError, KeyError, AttributeError, ValueError):
+        except Exception as Argument:
+            print(self.get_colored_name(), "Error:", str(Argument))
+            traceback.print_exc()
             if connection_was_established:
                 self._connection_manager.on_sensor_disconnect(self)
             else:

@@ -49,7 +49,7 @@ Nervous Sensors is a Python-based driver and data acquisition toolset for physio
 
 ## Prerequisites
 
-- Python 3.11 or 3.12
+- Python 3.11, 3.12 or 3.13
 - Compatible Bluetooth Low Energy Nervous sensors
 
 ---

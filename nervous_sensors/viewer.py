@@ -117,8 +117,9 @@ def update_data(n):
                 time = [time[0] - (time[1] - time[0]) * (n_points - data_size)] + time
 
             name = sensor.get_name()
-            name = f"{name[:3]} {name[3:]}"
-            suffix = " (mV)" if sensor.get_type() == "ECG" else " (µS)"
+            unit = sensor.get_unit()
+            name = f"{name}"
+            suffix = f" ({unit})"
 
             fig.add_trace(
                 go.Scatter(

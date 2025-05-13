@@ -1,6 +1,6 @@
 import asyncio
-import sys
 import os
+import sys
 
 import click
 
@@ -52,7 +52,8 @@ def cli(sensors, gui, folder, lsl, parallel):
         print_stop_info("Shutting down Nervous framework")
         os._exit(os.EX_OK)
 
-async def run_app(manager:ConnectionManager):
+
+async def run_app(manager: ConnectionManager):
     try:
         async with asyncio.TaskGroup() as tg:
             tg.create_task(manager.start())

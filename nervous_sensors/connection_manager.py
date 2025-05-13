@@ -8,6 +8,7 @@ from .gui_manager import GUIManager
 from .lsl_manager import LSLManager
 from .nervous_ecg import NervousECG
 from .nervous_eda import NervousEDA
+from .nervous_hr import NervousHR
 from .nervous_sensor import NervousSensor
 
 
@@ -18,8 +19,10 @@ class ConnectionManager(AsyncManager):
 
         for name in sensor_names:
             if "ECG" in name:
+                ecg_sensor = NervousECG(name=name, start_time=int(time.time()), timeout=10, connection_manager=self)
+                self._sensors.append(ecg_sensor)
                 self._sensors.append(
-                    NervousECG(name=name, start_time=int(time.time()), timeout=10, connection_manager=self)
+                    NervousHR(ecg_sensor=ecg_sensor, start_time=int(time.time()), timeout=10, connection_manager=self)
                 )
             elif "EDA" in name:
                 self._sensors.append(
