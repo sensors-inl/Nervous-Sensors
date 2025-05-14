@@ -1,6 +1,6 @@
 [project]
 name = "nervous-sensors"
-version = "0.2.0"
+version = "0.2.1"
 description = "Python backend for connection to ECG and EDA sensors from the Lyon Institute of Nanotechnology (INL)"
 authors = [
     {name = "Bertrand Massot", email = "bertrand.massot@insa-lyon.fr"},
