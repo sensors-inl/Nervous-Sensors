@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="assets/nervous-logo.png" align="center" width="50%">
+    <img src="https://raw.githubusercontent.com/sensors-inl/Nervous-Sensors/refs/heads/main/assets/nervous-logo.png" align="center" width="50%">
 </p>
 <p align="center">
     <h1 align="center">Nervous Sensors</h1>
