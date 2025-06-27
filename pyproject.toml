@@ -33,6 +33,7 @@ repository = "https://github.com/sensors-inl/Nervous-Sensors"
 
 [project.scripts]
 nervous = "nervous_sensors.cli:cli"
+nervous_gui = "nervous_sensors.gui:gui"
 
 [tool.poetry.group.dev]
 optional = true
