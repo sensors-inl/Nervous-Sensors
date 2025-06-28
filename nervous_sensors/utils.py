@@ -9,18 +9,16 @@ RESET = "\033[0m"
 
 # Help text for CLI options
 SENSORS_HELP = (
-    '"ECG XXXX","EDA XXXX",... : specify a list of '
-    "sensors name to connect to. Replace XXXX with the "
-    "serial number."
+    '"ECG XXXX","EDA XXXX",... : specify a list of sensors name to connect to. Replace XXXX with the serial number.'
 )
 GUI_HELP = (
     "Show real-time data graph in web browser. "
     "Get the URL of the webserver in the output console "
     "when the script is launched."
 )
-FOLDER_HELP = "Save CSV data files in folder. " "WARNING: The folder must exist as it won't be created."
+FOLDER_HELP = "Save CSV data files in folder. WARNING: The folder must exist as it won't be created."
 LSL_HELP = "Send sensor data on LSL outlets."
-PARALLEL_HELP = "Number of parallel connection tentatives authorized. " "This is optional and should not be set."
+PARALLEL_HELP = "Number of parallel connection tentatives authorized. This is optional and should not be set."
 
 # Available colors for different sensors or outputs
 colors = [
