@@ -53,7 +53,7 @@ class NervousSensor:
         self._units = ["a.u."]
         self._labels = ["signal"]
         self._start_time = start_time
-        self._start_time_str = f'{datetime.today().strftime("%Y_%m_%d")}_{datetime.now().strftime("%Hh%Mm")}'
+        self._start_time_str = f"{datetime.today().strftime('%Y_%m_%d')}_{datetime.now().strftime('%Hh%Mm')}"
         self._color = get_color(NervousSensor.n)
         self._timeout = timeout
         self._connection_manager = connection_manager

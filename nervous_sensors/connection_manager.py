@@ -69,6 +69,7 @@ class ConnectionManager(AsyncManager):
 
         self._semaphore = asyncio.Semaphore(parallel_connection_authorized)
         self._all_connected = asyncio.Event()
+        self._notifications_active = False
         self._async_managers = []
 
         if lsl:
@@ -245,17 +246,19 @@ class ConnectionManager(AsyncManager):
         """
         await self._run_parallel(lambda sensor: self.manage_connection(sensor))
 
-    async def stop_all_notifications(self):
-        """
-        Stop notifications for all sensors in parallel.
-        """
-        await self._run_parallel(lambda sensor: sensor.stop_notifications())
-
     async def start_all_notifications(self):
-        """
-        Start notifications for all sensors in parallel.
-        """
+        """Start notifications for all sensors in parallel."""
         await self._run_parallel(lambda sensor: sensor.start_notifications())
+        self._notifications_active = True
+
+    async def stop_all_notifications(self):
+        """Stop notifications for all sensors in parallel."""
+        await self._run_parallel(lambda sensor: sensor.stop_notifications())
+        self._notifications_active = False
+
+    def are_notifications_active(self):
+        """Check if notifications are currently active"""
+        return self._notifications_active
 
     async def disconnect_all(self):
         """

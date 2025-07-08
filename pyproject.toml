@@ -1,6 +1,6 @@
 [project]
 name = "nervous-sensors"
-version = "0.2.1"
+version = "0.2.2"
 description = "Python backend for connection to ECG and EDA sensors from the Lyon Institute of Nanotechnology (INL)"
 authors = [
     {name = "Bertrand Massot", email = "bertrand.massot@insa-lyon.fr"},
@@ -25,7 +25,7 @@ dependencies = [
     "dash_bootstrap_components>=1.6.0",
     "click>=8.1.7",
     "aioconsole>=0.7.1",
-    "nervous-analytics>=0.3.3"
+    "nervous-analytics>=0.3.4"
 ]
 
 [project.urls]
@@ -33,6 +33,7 @@ repository = "https://github.com/sensors-inl/Nervous-Sensors"
 
 [project.scripts]
 nervous = "nervous_sensors.cli:cli"
+nervous_gui = "nervous_sensors.gui:gui"
 
 [tool.poetry.group.dev]
 optional = true
