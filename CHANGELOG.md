@@ -4,7 +4,7 @@
 
 ## [0.2.2] - 2025-07-08
 
-### Added 
+### Added
 
 - Graphic user interface compatible with CLI
 
